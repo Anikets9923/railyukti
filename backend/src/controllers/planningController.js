@@ -2,6 +2,7 @@ const asyncHandler = require("../middleware/asyncHandler");
 const planningService = require("../services/planningService");
 const { sendSuccess } = require("../utils/apiResponse");
 const AppError = require("../utils/appError");
+const { validateGeneratePlanPayload } = require("../validators/planningValidators");
 
 const listPlanning = asyncHandler(async (request, response) => {
   const result = await planningService.listBlockPlans(request.query);
@@ -14,4 +15,10 @@ const getPlanning = asyncHandler(async (request, response) => {
   return sendSuccess(response, "Block plan retrieved successfully", plan);
 });
 
-module.exports = { getPlanning, listPlanning };
+const generatePlan = asyncHandler(async (request, response) => {
+  const input = validateGeneratePlanPayload(request.body);
+  const result = await planningService.generatePlan(input);
+  return sendSuccess(response, "Block plan generated successfully", result, 201);
+});
+
+module.exports = { generatePlan, getPlanning, listPlanning };
