@@ -1,0 +1,255 @@
+generator client {
+	provider = "prisma-client-js"
+}
+
+datasource db {
+	provider = "postgresql"
+}
+
+enum AssetCriticality {
+	LOW
+	MEDIUM
+	HIGH
+	CRITICAL
+}
+
+enum AssetStatus {
+	ACTIVE
+	INACTIVE
+	UNDER_MAINTENANCE
+	RETIRED
+}
+
+enum DefectSeverity {
+	LOW
+	MEDIUM
+	HIGH
+	CRITICAL
+}
+
+enum DefectStatus {
+	OPEN
+	IN_PROGRESS
+	RESOLVED
+	CLOSED
+}
+
+enum MaintenanceTaskType {
+	INSPECTION
+	PREVENTIVE
+	CORRECTIVE
+	EMERGENCY
+}
+
+enum MaintenanceTaskStatus {
+	PLANNED
+	IN_PROGRESS
+	COMPLETED
+	CANCELLED
+}
+
+enum TrainScheduleStatus {
+	SCHEDULED
+	CANCELLED
+	COMPLETED
+}
+
+enum BlockWindowStatus {
+	AVAILABLE
+	RESERVED
+	UNAVAILABLE
+	COMPLETED
+}
+
+enum BlockPlanStatus {
+	DRAFT
+	OPTIMIZED
+	APPROVED
+	COMPLETED
+	CANCELLED
+}
+
+enum ScheduledTaskStatus {
+	SCHEDULED
+	IN_PROGRESS
+	COMPLETED
+	SKIPPED
+	CANCELLED
+}
+
+model Department {
+	id               String            @id @default(cuid())
+	code             String            @unique @db.VarChar(20)
+	name             String            @db.VarChar(100)
+	description      String?
+	createdAt        DateTime          @default(now())
+	updatedAt        DateTime          @updatedAt
+	assets           Asset[]
+	maintenanceTasks MaintenanceTask[]
+}
+
+model Section {
+	id               String            @id @default(cuid())
+	code             String            @unique @db.VarChar(30)
+	name             String            @db.VarChar(100)
+	description      String?
+	createdAt        DateTime          @default(now())
+	updatedAt        DateTime          @updatedAt
+	assets           Asset[]
+	maintenanceTasks MaintenanceTask[]
+	trainSchedules   TrainSchedule[]
+	blockWindows     BlockWindow[]
+	blockPlans       BlockPlan[]
+}
+
+model Asset {
+	id               String           @id @default(cuid())
+	assetCode        String           @unique @db.VarChar(50)
+	departmentId     String
+	sectionId        String
+	assetType        String           @db.VarChar(100)
+	criticality      AssetCriticality
+	status           AssetStatus       @default(ACTIVE)
+	lastMaintenance  DateTime?        @db.Date
+	nextMaintenance  DateTime?        @db.Date
+	createdAt        DateTime          @default(now())
+	updatedAt        DateTime          @updatedAt
+	department       Department        @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+	section          Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+	defects          Defect[]
+	maintenanceTasks MaintenanceTask[]
+
+	@@index([departmentId])
+	@@index([sectionId])
+	@@index([criticality, status])
+}
+
+model Defect {
+	id          String         @id @default(cuid())
+	defectCode  String         @unique @db.VarChar(50)
+	assetId     String
+	description String
+	severity    DefectSeverity
+	status      DefectStatus   @default(OPEN)
+	detectedAt  DateTime       @default(now())
+	resolvedAt  DateTime?
+	sourceSystem String?       @db.VarChar(30)
+	createdAt   DateTime       @default(now())
+	updatedAt   DateTime       @updatedAt
+	asset       Asset          @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+	@@index([assetId])
+	@@index([status, severity])
+}
+
+model MaintenanceTask {
+	id               String                @id @default(cuid())
+	taskCode         String                @unique @db.VarChar(50)
+	assetId          String
+	departmentId     String
+	sectionId        String
+	taskType         MaintenanceTaskType
+	description      String
+	severity         DefectSeverity
+	priorityScore    Float?
+	status           MaintenanceTaskStatus @default(PLANNED)
+	dueDate          DateTime              @db.Date
+	overdueDays      Int                   @default(0)
+	estimatedDuration Int
+	crewRequired     Int                   @default(1)
+	createdAt        DateTime              @default(now())
+	updatedAt        DateTime              @updatedAt
+	asset            Asset                 @relation(fields: [assetId], references: [id], onDelete: Cascade)
+	department       Department            @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+	section          Section               @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+	scheduledTasks   ScheduledTask[]
+
+	@@index([assetId])
+	@@index([departmentId])
+	@@index([sectionId])
+	@@index([status, dueDate])
+	@@index([priorityScore])
+}
+
+model Train {
+	id           String          @id @default(cuid())
+	trainNumber  String          @unique @db.VarChar(30)
+	name         String          @db.VarChar(100)
+	trainType    String?         @db.VarChar(50)
+	active       Boolean         @default(true)
+	createdAt    DateTime        @default(now())
+	updatedAt    DateTime        @updatedAt
+	schedules    TrainSchedule[]
+}
+
+model TrainSchedule {
+	id             String              @id @default(cuid())
+	trainId        String
+	sectionId      String
+	date           DateTime            @db.Date
+	arrivalTime    DateTime            @db.Time(0)
+	departureTime  DateTime            @db.Time(0)
+	status         TrainScheduleStatus @default(SCHEDULED)
+	createdAt      DateTime            @default(now())
+	updatedAt      DateTime            @updatedAt
+	train          Train               @relation(fields: [trainId], references: [id], onDelete: Cascade)
+	section        Section             @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+	@@index([trainId])
+	@@index([sectionId, date])
+	@@index([date, status])
+}
+
+model BlockWindow {
+	id          String            @id @default(cuid())
+	sectionId   String
+	date        DateTime          @db.Date
+	startTime   DateTime          @db.Time(0)
+	endTime     DateTime          @db.Time(0)
+	maxDuration Int
+	status      BlockWindowStatus @default(AVAILABLE)
+	createdAt   DateTime          @default(now())
+	updatedAt   DateTime          @updatedAt
+	section     Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+	@@index([sectionId, date])
+	@@index([date, status])
+}
+
+model BlockPlan {
+	id               String            @id @default(cuid())
+	sectionId        String
+	date             DateTime          @db.Date
+	startTime        DateTime          @db.Time(0)
+	endTime          DateTime          @db.Time(0)
+	status           BlockPlanStatus   @default(DRAFT)
+	utilization      Float?
+	priority         Int               @default(0)
+	optimizationScore Float?
+	createdAt        DateTime          @default(now())
+	updatedAt        DateTime          @updatedAt
+	section          Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+	scheduledTasks   ScheduledTask[]
+
+	@@index([sectionId, date])
+	@@index([date, status])
+	@@index([priority])
+}
+
+model ScheduledTask {
+	id                String              @id @default(cuid())
+	maintenanceTaskId String
+	blockPlanId       String
+	startTime         DateTime
+	endTime           DateTime
+	status            ScheduledTaskStatus @default(SCHEDULED)
+	createdAt         DateTime            @default(now())
+	updatedAt         DateTime            @updatedAt
+	maintenanceTask   MaintenanceTask     @relation(fields: [maintenanceTaskId], references: [id], onDelete: Cascade)
+	blockPlan         BlockPlan           @relation(fields: [blockPlanId], references: [id], onDelete: Cascade)
+
+	@@unique([maintenanceTaskId, blockPlanId])
+	@@index([maintenanceTaskId])
+	@@index([blockPlanId])
+	@@index([startTime, endTime])
+}
