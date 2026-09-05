@@ -19,9 +19,9 @@ async function listBlockPlans(query) {
   if (status) where.status = status;
   if (query.date !== undefined) where.date = parseDateOnly(query.date, "date");
 
-  const [total, items] = await prisma.$transaction([
-    prisma.blockPlan.count({ where }),
-    prisma.blockPlan.findMany({
+  const { total, items } = await prisma.$transaction(async (transaction) => {
+    const total = await transaction.blockPlan.count({ where });
+    const items = await transaction.blockPlan.findMany({
       where,
       skip,
       take: limit,
@@ -30,8 +30,9 @@ async function listBlockPlans(query) {
         section: { select: { code: true, name: true } },
         _count: { select: { scheduledTasks: true } },
       },
-    }),
-  ]);
+    });
+    return { total, items };
+  });
   return { items, pagination: buildPagination(total, page, limit) };
 }
 
@@ -71,6 +72,7 @@ async function generatePlan({ startDate, endDate, departments }) {
       department: { code: { in: departments } },
       status: { in: [MaintenanceTaskStatus.PLANNED, MaintenanceTaskStatus.IN_PROGRESS] },
       dueDate: { lte: endDate },
+      scheduledTasks: { none: {} },
     },
     include: {
       asset: { select: { id: true, assetCode: true, criticality: true, sectionId: true } },
@@ -112,14 +114,15 @@ async function generatePlan({ startDate, endDate, departments }) {
   const priorityResponse = await aiService.prioritizeTasks(aiInput);
   const priorityByTaskId = new Map(priorityResponse.results.map((result) => [String(result.taskId), result]));
 
-  await prisma.$transaction(
-    maintenanceTasks
-      .filter((task) => priorityByTaskId.has(task.id))
-      .map((task) => prisma.maintenanceTask.update({
+  await prisma.$transaction(async (transaction) => {
+    for (const task of maintenanceTasks) {
+      if (!priorityByTaskId.has(task.id)) continue;
+      await transaction.maintenanceTask.update({
         where: { id: task.id },
         data: { priorityScore: priorityByTaskId.get(task.id).priorityScore },
-      })),
-  );
+      });
+    }
+  });
 
   const candidates = maintenanceTasks.map((task) => ({
     ...task,

@@ -82,6 +82,46 @@ async function getDashboardAnalytics() {
   };
 }
 
+async function getOptimizationAnalytics(id) {
+  const plan = await prisma.blockPlan.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      date: true,
+      status: true,
+      utilization: true,
+      optimizationScore: true,
+      priority: true,
+      section: { select: { code: true, name: true } },
+      scheduledTasks: {
+        select: { id: true, maintenanceTaskId: true, startTime: true, endTime: true },
+      },
+    },
+  });
+
+  if (!plan) {
+    const AppError = require("../utils/appError");
+    throw new AppError("Block plan not found", 404);
+  }
+
+  const totalScheduledMinutes = plan.scheduledTasks.reduce(
+    (total, task) => total + (task.endTime.getTime() - task.startTime.getTime()) / 60000,
+    0,
+  );
+
+  return {
+    planId: plan.id,
+    section: plan.section,
+    date: plan.date,
+    status: plan.status,
+    utilization: (plan.utilization || 0) * 100,
+    optimizationScore: plan.optimizationScore || 0,
+    priority: plan.priority,
+    scheduledTaskCount: new Set(plan.scheduledTasks.map((task) => task.maintenanceTaskId)).size,
+    totalScheduledMinutes,
+  };
+}
+
 async function getScheduledTaskCountsByDepartment() {
   const groupedTasks = await prisma.maintenanceTask.groupBy({
     by: ["departmentId"],
@@ -118,4 +158,4 @@ function average(values) {
   return values.reduce((total, value) => total + value, 0) / values.length;
 }
 
-module.exports = { getDashboardAnalytics };
+module.exports = { getDashboardAnalytics, getOptimizationAnalytics };

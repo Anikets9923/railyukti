@@ -18,7 +18,7 @@ const getPlanning = asyncHandler(async (request, response) => {
 const generatePlan = asyncHandler(async (request, response) => {
   const input = validateGeneratePlanPayload(request.body);
   const result = await planningService.generatePlan(input);
-  return sendSuccess(response, "Block plan generated successfully", result, 201);
+  return sendSuccess(response, "Block plan generated successfully", result);
 });
 
 module.exports = { generatePlan, getPlanning, listPlanning };

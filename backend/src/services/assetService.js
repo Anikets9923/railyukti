@@ -21,9 +21,9 @@ async function listAssets(query) {
   if (criticality) where.criticality = criticality;
   if (status) where.status = status;
 
-  const [total, items] = await prisma.$transaction([
-    prisma.asset.count({ where }),
-    prisma.asset.findMany({
+  const { total, items } = await prisma.$transaction(async (transaction) => {
+    const total = await transaction.asset.count({ where });
+    const items = await transaction.asset.findMany({
       where,
       skip,
       take: limit,
@@ -33,8 +33,9 @@ async function listAssets(query) {
         section: { select: { code: true, name: true } },
         _count: { select: { defects: true, maintenanceTasks: true } },
       },
-    }),
-  ]);
+    });
+    return { total, items };
+  });
 
   return { items, pagination: buildPagination(total, page, limit) };
 }

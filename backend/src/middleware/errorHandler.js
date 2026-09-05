@@ -1,5 +1,5 @@
 function errorHandler(error, request, response, next) {
-  const statusCode = error.statusCode || getDatabaseErrorStatus(error) || 500;
+  const statusCode = error.statusCode || error.status || getDatabaseErrorStatus(error) || 500;
   const message = statusCode === 500 ? "Internal server error" : error.message;
   const payload = {
     success: false,

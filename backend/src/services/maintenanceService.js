@@ -49,9 +49,9 @@ async function listMaintenanceTasks(query) {
     where.dueDate = { gte: date, lt: nextDate };
   }
 
-  const [total, items] = await prisma.$transaction([
-    prisma.maintenanceTask.count({ where }),
-    prisma.maintenanceTask.findMany({
+  const { total, items } = await prisma.$transaction(async (transaction) => {
+    const total = await transaction.maintenanceTask.count({ where });
+    const items = await transaction.maintenanceTask.findMany({
       where,
       skip,
       take: limit,
@@ -62,8 +62,9 @@ async function listMaintenanceTasks(query) {
         section: { select: { code: true, name: true } },
         _count: { select: { scheduledTasks: true } },
       },
-    }),
-  ]);
+    });
+    return { total, items };
+  });
 
   return { items, pagination: buildPagination(total, page, limit) };
 }
@@ -84,11 +85,10 @@ async function getMaintenanceTaskById(id) {
 }
 
 async function validateTaskReferences(data) {
-  const references = await Promise.all([
-    data.assetId ? prisma.asset.findUnique({ where: { id: data.assetId } }) : null,
-    data.departmentId ? prisma.department.findUnique({ where: { id: data.departmentId } }) : null,
-    data.sectionId ? prisma.section.findUnique({ where: { id: data.sectionId } }) : null,
-  ]);
+  const references = [];
+  references.push(data.assetId ? await prisma.asset.findUnique({ where: { id: data.assetId } }) : null);
+  references.push(data.departmentId ? await prisma.department.findUnique({ where: { id: data.departmentId } }) : null);
+  references.push(data.sectionId ? await prisma.section.findUnique({ where: { id: data.sectionId } }) : null);
 
   if (data.assetId && !references[0]) throw new AppError("Asset not found", 400);
   if (data.departmentId && !references[1]) throw new AppError("Department not found", 400);

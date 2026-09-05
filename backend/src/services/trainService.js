@@ -11,15 +11,16 @@ const { TrainScheduleStatus } = require("@prisma/client");
 
 async function listTrains(query) {
   const { page, limit, skip } = parsePagination(query);
-  const [total, items] = await prisma.$transaction([
-    prisma.train.count(),
-    prisma.train.findMany({
+  const { total, items } = await prisma.$transaction(async (transaction) => {
+    const total = await transaction.train.count();
+    const items = await transaction.train.findMany({
       skip,
       take: limit,
       orderBy: { trainNumber: "asc" },
       include: { _count: { select: { schedules: true } } },
-    }),
-  ]);
+    });
+    return { total, items };
+  });
   return { items, pagination: buildPagination(total, page, limit) };
 }
 
@@ -46,9 +47,9 @@ async function listSchedules(query) {
   if (status) where.status = status;
   if (query.date !== undefined) where.date = parseDateOnly(query.date, "date");
 
-  const [total, items] = await prisma.$transaction([
-    prisma.trainSchedule.count({ where }),
-    prisma.trainSchedule.findMany({
+  const { total, items } = await prisma.$transaction(async (transaction) => {
+    const total = await transaction.trainSchedule.count({ where });
+    const items = await transaction.trainSchedule.findMany({
       where,
       skip,
       take: limit,
@@ -57,8 +58,9 @@ async function listSchedules(query) {
         train: { select: { trainNumber: true, name: true, trainType: true } },
         section: { select: { code: true, name: true } },
       },
-    }),
-  ]);
+    });
+    return { total, items };
+  });
   return { items, pagination: buildPagination(total, page, limit) };
 }
 
