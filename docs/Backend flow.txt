@@ -1,0 +1,19 @@
+Backend flow
+
+PostgreSQL
+    ↓
+Prisma
+    ↓
+Express API
+    ↓
+Planning Service
+    ↓
+Mock AI Priority
+    ↓
+Optimization Engine
+    ↓
+Block Plan
+    ↓
+Scheduled Tasks
+    ↓
+Analytics API

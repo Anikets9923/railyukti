@@ -1,0 +1,1303 @@
+Backend Docs for Frontend
+
+
+
+# Railway Maintenance Optimization System
+
+## Frontend API Integration Documentation
+
+**Project:** AI-Powered Automatic Block Planning to Maximize Asset Availability for Train Operations
+
+**Backend:** Node.js + Express + PostgreSQL + Prisma
+
+**Document:** Frontend API Contract
+
+**Status:** MVP
+
+---
+
+# 1. Base URL
+
+For local development:
+
+```text
+http://localhost:5000
+```
+
+All API endpoints use:
+
+```text
+/api
+```
+
+Example:
+
+```text
+GET http://localhost:5000/api/assets
+```
+
+The frontend should store the base URL in an environment variable.
+
+Example:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+Do not hardcode the backend URL throughout the React application.
+
+---
+
+# 2. General Response Format
+
+Successful responses generally follow:
+
+```json
+{
+  "success": true,
+  "message": "Operation completed successfully",
+  "data": {}
+}
+```
+
+Error responses generally follow:
+
+```json
+{
+  "success": false,
+  "message": "Error description"
+}
+```
+
+The frontend should always check:
+
+```javascript
+response.data.success
+```
+
+before assuming the operation succeeded.
+
+---
+
+# 3. API Overview
+
+| Method | Endpoint                          | Purpose                   |
+| ------ | --------------------------------- | ------------------------- |
+| GET    | `/api/health`                     | Backend health            |
+| GET    | `/api/assets`                     | List assets               |
+| GET    | `/api/assets/:id`                 | Asset details             |
+| GET    | `/api/maintenance`                | List maintenance tasks    |
+| GET    | `/api/maintenance/:id`            | Maintenance details       |
+| POST   | `/api/maintenance`                | Create maintenance task   |
+| PUT    | `/api/maintenance/:id`            | Update maintenance task   |
+| GET    | `/api/trains`                     | List trains               |
+| GET    | `/api/trains/:id`                 | Train details             |
+| GET    | `/api/trains/schedule`            | Train schedules           |
+| GET    | `/api/blocks`                     | List block windows        |
+| GET    | `/api/blocks/:id`                 | Block details             |
+| GET    | `/api/blocks/available`           | Available block windows   |
+| POST   | `/api/planning/generate`          | Generate optimized plan   |
+| GET    | `/api/planning`                   | List generated plans      |
+| GET    | `/api/planning/:id`               | Plan details              |
+| GET    | `/api/analytics/dashboard`        | Dashboard analytics       |
+| GET    | `/api/analytics/optimization/:id` | Plan optimization metrics |
+
+---
+
+# 4. Health Check
+
+## GET `/api/health`
+
+Used to verify that the backend is running.
+
+### Response
+
+```json
+{
+  "success": true,
+  "message": "Backend is healthy"
+}
+```
+
+### Frontend usage
+
+Usually not displayed to users.
+
+Can be used for:
+
+* Startup checks
+* Debugging
+* System status indicators
+
+---
+
+# 5. Assets
+
+## GET `/api/assets`
+
+Returns railway infrastructure assets.
+
+### Example response structure
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "asset-id",
+      "assetCode": "TRK-001",
+      "assetType": "TRACK",
+      "department": {
+        "code": "ENG",
+        "name": "Engineering"
+      },
+      "section": {
+        "code": "SEC-D1",
+        "name": "Dhaulagiri - Industrial Spur"
+      },
+      "criticality": 5,
+      "status": "ACTIVE",
+      "lastMaintenance": "...",
+      "nextMaintenance": "..."
+    }
+  ]
+}
+```
+
+### Frontend page
+
+**Asset Management**
+
+Display:
+
+* Asset code
+* Asset type
+* Department
+* Section
+* Criticality
+* Status
+* Last maintenance
+* Next maintenance
+
+---
+
+# 6. Asset Details
+
+## GET `/api/assets/:id`
+
+Returns one asset and its related information.
+
+Example:
+
+```text
+GET /api/assets/cmt123...
+```
+
+Use this for:
+
+* Asset detail page
+* Asset modal
+* Maintenance history view
+
+---
+
+# 7. Maintenance Tasks
+
+## GET `/api/maintenance`
+
+Returns maintenance tasks.
+
+Useful frontend filters:
+
+* Department
+* Severity
+* Priority
+* Status
+* Due date
+* Overdue
+* Section
+
+Example conceptual response:
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "task-id",
+      "taskCode": "MT-001",
+      "taskType": "INSPECTION",
+      "description": "Track inspection",
+      "severity": 5,
+      "priorityScore": 94,
+      "status": "PENDING",
+      "dueDate": "...",
+      "overdueDays": 4,
+      "estimatedDuration": 60,
+      "department": {
+        "code": "ENG",
+        "name": "Engineering"
+      },
+      "asset": {
+        "assetCode": "TRK-001"
+      }
+    }
+  ]
+}
+```
+
+---
+
+# 8. Maintenance Details
+
+## GET `/api/maintenance/:id`
+
+Use this for the maintenance-task detail screen.
+
+Display:
+
+* Task code
+* Description
+* Asset
+* Department
+* Section
+* Severity
+* Priority score
+* Status
+* Due date
+* Overdue days
+* Estimated duration
+* Crew requirement
+
+---
+
+# 9. Create Maintenance Task
+
+## POST `/api/maintenance`
+
+Used to create a new maintenance task.
+
+Example request:
+
+```json
+{
+  "taskCode": "MT-101",
+  "assetId": "asset-id",
+  "departmentId": "department-id",
+  "sectionId": "section-id",
+  "taskType": "INSPECTION",
+  "description": "Track inspection",
+  "severity": 4,
+  "dueDate": "2026-09-10",
+  "estimatedDuration": 90,
+  "crewRequired": 3
+}
+```
+
+After successful creation:
+
+```text
+Refresh maintenance data
+```
+
+---
+
+# 10. Update Maintenance Task
+
+## PUT `/api/maintenance/:id`
+
+Used to update an existing maintenance task.
+
+Example:
+
+```json
+{
+  "severity": 5,
+  "status": "PENDING",
+  "estimatedDuration": 120
+}
+```
+
+After success, refresh the task or update it locally.
+
+---
+
+# 11. Trains
+
+## GET `/api/trains`
+
+Returns trains available in the planning dataset.
+
+Useful for:
+
+* Train list
+* Traffic overview
+* Planning context
+
+---
+
+# 12. Train Details
+
+## GET `/api/trains/:id`
+
+Returns details of one train.
+
+Display:
+
+* Train number
+* Train name
+* Train type
+* Priority
+
+---
+
+# 13. Train Schedule
+
+## GET `/api/trains/schedule`
+
+Returns train schedule information.
+
+Example conceptual object:
+
+```json
+{
+  "trainId": "train-id",
+  "sectionId": "section-id",
+  "arrivalTime": "...",
+  "departureTime": "...",
+  "date": "...",
+  "direction": "UP"
+}
+```
+
+This data can be used by the frontend to visualize traffic conflicts around maintenance blocks.
+
+---
+
+# 14. Block Windows
+
+## GET `/api/blocks`
+
+Returns all available/planned block windows.
+
+Display:
+
+* Section
+* Date
+* Start time
+* End time
+* Maximum duration
+* Status
+
+---
+
+# 15. Block Details
+
+## GET `/api/blocks/:id`
+
+Returns information about one block window.
+
+Useful for a block detail modal.
+
+---
+
+# 16. Available Blocks
+
+## GET `/api/blocks/available`
+
+Returns block windows currently considered available for planning.
+
+Use this for:
+
+* Planning screen
+* Available-window indicators
+* Block selection/filtering
+
+---
+
+# 17. Generate Optimized Plan
+
+## POST `/api/planning/generate`
+
+This is the **most important backend endpoint**.
+
+The frontend uses this endpoint when the user clicks:
+
+```text
+Generate Plan
+```
+
+### Request
+
+```json
+{
+  "start_date": "2026-09-07",
+  "end_date": "2026-09-13",
+  "departments": [
+    "ENG",
+    "TRD",
+    "SNT"
+  ]
+}
+```
+
+### Processing
+
+Backend performs:
+
+```text
+Maintenance Tasks
+       ↓
+AI Priority Engine
+       ↓
+Priority Scores
+       ↓
+Available Block Windows
+       ↓
+Train Schedule Constraints
+       ↓
+Optimization Engine
+       ↓
+Optimized Block Plan
+       ↓
+Database
+```
+
+### Response
+
+Conceptual response:
+
+```json
+{
+  "success": true,
+  "message": "Block plan generated successfully",
+  "data": {
+    "dateRange": {
+      "startDate": "2026-09-07T00:00:00.000Z",
+      "endDate": "2026-09-13T00:00:00.000Z"
+    },
+    "departments": [
+      "ENG",
+      "TRD",
+      "SNT"
+    ],
+    "tasksConsidered": 11,
+    "assetsConsidered": 9,
+    "trainSchedulesConsidered": 4,
+    "blockWindowsConsidered": 4,
+    "tasksScheduled": 2,
+    "plansCreated": 1,
+    "plans": []
+  }
+}
+```
+
+### Frontend behavior
+
+When the user clicks **Generate Plan**:
+
+1. Disable the button.
+2. Show loading state.
+3. Send request.
+4. Wait for response.
+5. Display success/error notification.
+6. Refresh planning data.
+7. Refresh dashboard analytics.
+8. Display generated plan.
+
+Example UI:
+
+```text
+Generating optimized plan...
+
+[████████████████░░░░]
+
+AI priority → Optimization → Saving plan
+```
+
+Do not allow multiple accidental submissions while generation is running.
+
+---
+
+# 18. Generated Plans
+
+## GET `/api/planning`
+
+Returns generated block plans.
+
+Use this for:
+
+* Planning history
+* Weekly plans
+* Monthly plans
+* Plan list
+
+---
+
+# 19. Plan Details
+
+## GET `/api/planning/:id`
+
+Returns a complete generated plan.
+
+The frontend should use this endpoint for the detailed planning/Gantt screen.
+
+Important data:
+
+```text
+Plan
+ ├── Section
+ ├── Date
+ ├── Start Time
+ ├── End Time
+ ├── Status
+ ├── Utilization
+ ├── Priority
+ ├── Optimization Score
+ └── Scheduled Tasks
+        ├── Maintenance Task
+        ├── Start Time
+        ├── End Time
+        └── Status
+```
+
+---
+
+# 20. Gantt Chart Mapping
+
+The frontend Gantt chart can map:
+
+```text
+BlockPlan
+    ↓
+ScheduledTasks
+```
+
+Example:
+
+```text
+07:00       08:00       09:00       10:00
+ |-----------|-----------|-----------|
+ | Task 1    | Task 2    |           |
+ |-----------|-----------|-----------|
+ <------------- Block -------------->
+```
+
+Each scheduled task should display:
+
+* Task code
+* Department
+* Section
+* Start time
+* End time
+* Priority
+* Status
+
+---
+
+# 21. Dashboard Analytics
+
+## GET `/api/analytics/dashboard`
+
+This endpoint powers the main dashboard.
+
+Current analytics include:
+
+```json
+{
+  "success": true,
+  "message": "Dashboard analytics retrieved successfully",
+  "data": {
+    "totalMaintenanceTasks": 11,
+    "pendingTasks": 11,
+    "criticalTasks": 3,
+    "overdueTasks": 5,
+    "scheduledTasks": 4,
+    "unscheduledTasks": 7,
+    "totalBlockWindows": 13,
+    "usedBlockWindows": 1,
+    "averageBlockUtilization": 100,
+    "departmentTaskCounts": []
+  }
+}
+```
+
+**Important:** The exact numbers above are sample/demo values. Do not hardcode them.
+
+The frontend must use the values returned by the API.
+
+---
+
+# 22. Dashboard Cards
+
+Recommended dashboard cards:
+
+```text
+┌────────────────────┐
+│ Total Tasks        │
+│        11          │
+└────────────────────┘
+
+┌────────────────────┐
+│ Critical Tasks     │
+│         3          │
+└────────────────────┘
+
+┌────────────────────┐
+│ Overdue Tasks      │
+│         5          │
+└────────────────────┘
+
+┌────────────────────┐
+│ Scheduled Tasks    │
+│         4          │
+└────────────────────┘
+
+┌────────────────────┐
+│ Unscheduled Tasks  │
+│         7          │
+└────────────────────┘
+
+┌────────────────────┐
+│ Block Utilization  │
+│       100%         │
+└────────────────────┘
+```
+
+---
+
+# 23. Department Analytics
+
+`departmentTaskCounts` can be used to create a chart.
+
+Example:
+
+```json
+[
+  {
+    "departmentCode": "ENG",
+    "departmentName": "Engineering",
+    "taskCount": 4,
+    "scheduledTaskCount": 0
+  },
+  {
+    "departmentCode": "TRD",
+    "departmentName": "Traction Distribution",
+    "taskCount": 4,
+    "scheduledTaskCount": 1
+  },
+  {
+    "departmentCode": "SNT",
+    "departmentName": "Signal and Telecom",
+    "taskCount": 3,
+    "scheduledTaskCount": 1
+  }
+]
+```
+
+Recommended visualization:
+
+```text
+Department
+Tasks        Scheduled
+
+ENG   ████████████  4       0
+TRD   ████████████  4       1
+SNT   █████████     3       1
+```
+
+---
+
+# 24. Optimization Analytics
+
+## GET `/api/analytics/optimization/:id`
+
+Use this endpoint to display optimization information for a generated plan.
+
+Recommended UI:
+
+```text
+Optimization Summary
+
+Optimization Score     100
+Block Utilization      100%
+Tasks Scheduled        2
+Block Duration         150 min
+```
+
+---
+
+# 25. Important Data Relationships
+
+The frontend should understand these relationships:
+
+```text
+Department
+   │
+   ├── Assets
+   │      │
+   │      └── Maintenance Tasks
+   │
+   └── Maintenance Tasks
+
+Section
+   │
+   ├── Assets
+   ├── Train Schedules
+   └── Block Windows
+
+Block Plan
+   │
+   └── Scheduled Tasks
+            │
+            └── Maintenance Task
+```
+
+---
+
+# 26. Recommended Frontend Pages
+
+## Dashboard
+
+APIs:
+
+```text
+GET /api/analytics/dashboard
+GET /api/analytics/optimization/:id
+```
+
+Components:
+
+* KPI cards
+* Department chart
+* Critical task chart
+* Block utilization
+* Recent plans
+
+---
+
+## Maintenance
+
+APIs:
+
+```text
+GET /api/maintenance
+GET /api/maintenance/:id
+POST /api/maintenance
+PUT /api/maintenance/:id
+```
+
+Components:
+
+* Task table
+* Filters
+* Task detail modal
+* Create task form
+* Edit task form
+
+---
+
+## Assets
+
+APIs:
+
+```text
+GET /api/assets
+GET /api/assets/:id
+```
+
+Components:
+
+* Asset table
+* Asset detail
+* Department filter
+* Section filter
+* Criticality indicator
+
+---
+
+## Planning
+
+APIs:
+
+```text
+GET /api/blocks/available
+POST /api/planning/generate
+GET /api/planning
+GET /api/planning/:id
+```
+
+Components:
+
+* Date range selector
+* Department selector
+* Generate Plan button
+* Loading state
+* Gantt chart
+* Block cards
+* Scheduled task cards
+
+---
+
+## Trains
+
+APIs:
+
+```text
+GET /api/trains
+GET /api/trains/:id
+GET /api/trains/schedule
+```
+
+Components:
+
+* Train list
+* Schedule table
+* Section filter
+
+---
+
+# 27. Loading States
+
+Every API call should have a loading state.
+
+Example:
+
+```javascript
+const [loading, setLoading] = useState(false);
+```
+
+For planning generation:
+
+```text
+Generate Plan
+      ↓
+   Loading
+      ↓
+Plan generated
+```
+
+Disable the button while the request is running.
+
+---
+
+# 28. Error Handling
+
+Frontend should handle at least:
+
+### 400
+
+Bad request / validation error.
+
+Display:
+
+```text
+Please check the planning parameters.
+```
+
+### 404
+
+Resource not found.
+
+Display:
+
+```text
+Requested resource was not found.
+```
+
+### 500
+
+Backend/internal error.
+
+Display:
+
+```text
+Something went wrong. Please try again.
+```
+
+### AI/Optimizer unavailable
+
+Display:
+
+```text
+Planning service is temporarily unavailable.
+Please try again later.
+```
+
+Do not expose stack traces or internal database errors to users.
+
+---
+
+# 29. API Client Structure
+
+Recommended React structure:
+
+```text
+frontend/
+└── src/
+    ├── api/
+    │   ├── client.js
+    │   ├── assets.js
+    │   ├── maintenance.js
+    │   ├── trains.js
+    │   ├── blocks.js
+    │   ├── planning.js
+    │   └── analytics.js
+    │
+    ├── components/
+    ├── pages/
+    ├── hooks/
+    └── utils/
+```
+
+Example:
+
+```javascript
+// api/client.js
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+export async function apiRequest(endpoint, options = {}) {
+  const response = await fetch(
+    `${API_BASE_URL}${endpoint}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {})
+      },
+      ...options
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "API request failed");
+  }
+
+  return data;
+}
+```
+
+Then:
+
+```javascript
+// api/planning.js
+
+import { apiRequest } from "./client";
+
+export function generatePlan(payload) {
+  return apiRequest("/planning/generate", {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+}
+
+export function getPlans() {
+  return apiRequest("/planning");
+}
+
+export function getPlan(id) {
+  return apiRequest(`/planning/${id}`);
+}
+```
+
+---
+
+# 30. Environment Configuration
+
+Frontend:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+Production should use the deployed backend URL.
+
+Never hardcode environment-specific URLs in React components.
+
+---
+
+# 31. Recommended API Call Flow
+
+When opening Dashboard:
+
+```text
+Dashboard mounted
+       ↓
+GET /analytics/dashboard
+       ↓
+Render KPI cards
+       ↓
+Render department chart
+```
+
+When opening Planning:
+
+```text
+Planning page
+      ↓
+GET /planning
+GET /blocks/available
+      ↓
+Display existing plans
+      ↓
+User selects date range
+      ↓
+POST /planning/generate
+      ↓
+GET /planning/:id
+      ↓
+Display Gantt
+```
+
+---
+
+# 32. Important Frontend Rules
+
+### Do not hardcode backend data
+
+Bad:
+
+```javascript
+const criticalTasks = 3;
+```
+
+Good:
+
+```javascript
+const criticalTasks = dashboardData.criticalTasks;
+```
+
+### Do not calculate backend-owned metrics unnecessarily
+
+For example, utilization is already returned by the backend as a percentage.
+
+Use:
+
+```javascript
+`${utilization}%`
+```
+
+instead of converting it again.
+
+### Do not assume IDs are numeric
+
+IDs may be strings/CUIDs.
+
+Use:
+
+```javascript
+String(id)
+```
+
+when necessary.
+
+### Do not assume a plan always exists
+
+Handle:
+
+```text
+plans = []
+```
+
+gracefully.
+
+### Always handle loading and error states.
+
+---
+
+# 33. MVP Frontend Priority
+
+Implement in this order:
+
+### Priority 1
+
+Dashboard
+
+```text
+Analytics API
+↓
+KPI Cards
+↓
+Department Chart
+```
+
+### Priority 2
+
+Maintenance
+
+```text
+Maintenance API
+↓
+Task Table
+↓
+Filters
+```
+
+### Priority 3
+
+Planning
+
+```text
+Generate Plan
+↓
+Plan Response
+↓
+Gantt / Calendar
+```
+
+### Priority 4
+
+Assets
+
+```text
+Asset List
+↓
+Asset Details
+```
+
+### Priority 5
+
+Trains
+
+```text
+Train Schedule
+↓
+Planning Context
+```
+
+---
+
+# 34. Backend Integration Status
+
+Current backend status:
+
+```text
+Health                  ✅
+Assets                  ✅
+Maintenance             ✅
+Trains                  ✅
+Blocks                  ✅
+Planning                ✅
+Optimization            ✅
+Analytics               ✅
+Validation              ✅
+Error handling          ✅
+Duplicate prevention    ✅
+Integration tests       ✅
+```
+
+Integration test result:
+
+```text
+Tests:       14
+Passed:      14
+Failed:       0
+Skipped:      0
+Duration:     ~1.5 seconds
+```
+
+---
+
+# 35. Current Architecture
+
+```text
+                 ┌─────────────────┐
+                 │ React Frontend  │
+                 └────────┬────────┘
+                          │
+                          │ REST API
+                          ↓
+                 ┌─────────────────┐
+                 │ Node + Express  │
+                 └────────┬────────┘
+                          │
+                 ┌────────┴─────────┐
+                 ↓                  ↓
+          ┌─────────────┐    ┌─────────────┐
+          │ PostgreSQL  │    │ AI Service  │
+          │  + Prisma   │    │   Mock      │
+          └─────────────┘    └──────┬──────┘
+                                    │
+                                    ↓
+                             ┌─────────────┐
+                             │ Optimization│
+                             │   Engine    │
+                             └─────────────┘
+```
+
+---
+
+# 36. Important Prototype Note
+
+This system is a **prototype** using synthetic/mock data.
+
+The frontend must not claim that it is directly controlling live Indian Railway infrastructure.
+
+The system should be presented as:
+
+> An AI-assisted decision-support platform for coordinated railway maintenance block planning.
+
+Final operational decisions remain with authorized railway personnel.
+
+---
+
+# 37. Integration Checklist
+
+Before declaring frontend/backend integration complete:
+
+* [ ] Frontend `.env` configured
+* [ ] Backend running
+* [ ] Dashboard loads
+* [ ] Maintenance list loads
+* [ ] Asset list loads
+* [ ] Train schedule loads
+* [ ] Block windows load
+* [ ] Generate Plan works
+* [ ] Generated plan appears in UI
+* [ ] Gantt displays scheduled tasks
+* [ ] Utilization displays correctly as percentage
+* [ ] Department analytics display correctly
+* [ ] Empty plan state works
+* [ ] API error state works
+* [ ] Loading states work
+* [ ] Duplicate Generate clicks are prevented
+* [ ] No backend URLs are hardcoded
+* [ ] No sensitive environment variables are committed
+
+---
+
+# 38. Definition of Done
+
+Frontend/backend integration is considered complete when a user can:
+
+```text
+Open Dashboard
+      ↓
+See maintenance statistics
+      ↓
+View maintenance tasks
+      ↓
+View available block windows
+      ↓
+Select planning period
+      ↓
+Select departments
+      ↓
+Click "Generate Plan"
+      ↓
+Backend runs AI + optimization
+      ↓
+Optimized plan is generated
+      ↓
+Plan is saved
+      ↓
+Frontend displays the plan
+      ↓
+User views tasks on Gantt/Calendar
+      ↓
+User sees utilization + optimization metrics
+```
+
+This represents the complete MVP demonstration flow.
