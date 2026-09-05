@@ -1,0 +1,8 @@
+railyukti backend apis 
+
+/api : healthRoutes
+/api/assets  : assetRoutes
+/api/maintenance": maintenanceRoutes
+/api/trains : trainRoutes
+/api/blocks : blockWindowRoutes
+/api/planning : planningRoutes);
