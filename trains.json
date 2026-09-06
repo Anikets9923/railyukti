@@ -1,0 +1,650 @@
+[
+  {
+    "train_id": "TR-0001",
+    "train_number": "12001",
+    "train_name": "Mumbai-Pune Service 01",
+    "train_type": "Passenger",
+    "zone": "Central Railway",
+    "origin": "Mumbai",
+    "destination": "Pune",
+    "scheduled_departure": "05:45",
+    "coach_count": 16,
+    "priority_class": "PREMIUM",
+    "asset_availability_required": 0.87,
+    "assigned_asset_ids": [
+      "AST-0009",
+      "AST-0003",
+      "AST-0004"
+    ]
+  },
+  {
+    "train_id": "TR-0002",
+    "train_number": "12002",
+    "train_name": "Delhi-Howrah Service 02",
+    "train_type": "Express",
+    "zone": "Northern Railway",
+    "origin": "Delhi",
+    "destination": "Howrah",
+    "scheduled_departure": "17:00",
+    "coach_count": 11,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.88,
+    "assigned_asset_ids": [
+      "AST-0033",
+      "AST-0039",
+      "AST-0040"
+    ]
+  },
+  {
+    "train_id": "TR-0003",
+    "train_number": "12003",
+    "train_name": "Bangalore-Ernakulam Service 03",
+    "train_type": "Intercity",
+    "zone": "South Western Railway",
+    "origin": "Bangalore",
+    "destination": "Ernakulam",
+    "scheduled_departure": "20:00",
+    "coach_count": 19,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.84,
+    "assigned_asset_ids": [
+      "AST-0048",
+      "AST-0060",
+      "AST-0057"
+    ]
+  },
+  {
+    "train_id": "TR-0004",
+    "train_number": "12004",
+    "train_name": "Mumbai-Delhi Service 04",
+    "train_type": "Passenger",
+    "zone": "Central Railway",
+    "origin": "Mumbai",
+    "destination": "Delhi",
+    "scheduled_departure": "08:45",
+    "coach_count": 21,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.9,
+    "assigned_asset_ids": [
+      "AST-0001",
+      "AST-0016",
+      "AST-0009"
+    ]
+  },
+  {
+    "train_id": "TR-0005",
+    "train_number": "12005",
+    "train_name": "Pune-Howrah Service 05",
+    "train_type": "Express",
+    "zone": "Central Railway",
+    "origin": "Pune",
+    "destination": "Howrah",
+    "scheduled_departure": "21:00",
+    "coach_count": 17,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.89,
+    "assigned_asset_ids": [
+      "AST-0036",
+      "AST-0024",
+      "AST-0028"
+    ]
+  },
+  {
+    "train_id": "TR-0006",
+    "train_number": "12006",
+    "train_name": "Delhi-Bangalore Service 06",
+    "train_type": "Superfast",
+    "zone": "Northern Railway",
+    "origin": "Delhi",
+    "destination": "Bangalore",
+    "scheduled_departure": "08:00",
+    "coach_count": 21,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.82,
+    "assigned_asset_ids": [
+      "AST-0011",
+      "AST-0019",
+      "AST-0056"
+    ]
+  },
+  {
+    "train_id": "TR-0007",
+    "train_number": "12007",
+    "train_name": "Howrah-Ernakulam Service 07",
+    "train_type": "Express",
+    "zone": "Eastern Railway",
+    "origin": "Howrah",
+    "destination": "Ernakulam",
+    "scheduled_departure": "20:15",
+    "coach_count": 10,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.91,
+    "assigned_asset_ids": [
+      "AST-0043",
+      "AST-0042",
+      "AST-0037"
+    ]
+  },
+  {
+    "train_id": "TR-0008",
+    "train_number": "12008",
+    "train_name": "Pune-Bangalore Service 08",
+    "train_type": "Superfast",
+    "zone": "Central Railway",
+    "origin": "Pune",
+    "destination": "Bangalore",
+    "scheduled_departure": "14:00",
+    "coach_count": 21,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.95,
+    "assigned_asset_ids": [
+      "AST-0057",
+      "AST-0053",
+      "AST-0030"
+    ]
+  },
+  {
+    "train_id": "TR-0009",
+    "train_number": "12009",
+    "train_name": "Mumbai-Howrah Service 09",
+    "train_type": "Superfast",
+    "zone": "Central Railway",
+    "origin": "Mumbai",
+    "destination": "Howrah",
+    "scheduled_departure": "18:00",
+    "coach_count": 22,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.89,
+    "assigned_asset_ids": [
+      "AST-0039",
+      "AST-0005",
+      "AST-0034"
+    ]
+  },
+  {
+    "train_id": "TR-0010",
+    "train_number": "12010",
+    "train_name": "Delhi-Pune Service 10",
+    "train_type": "Express",
+    "zone": "Northern Railway",
+    "origin": "Delhi",
+    "destination": "Pune",
+    "scheduled_departure": "02:15",
+    "coach_count": 20,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.83,
+    "assigned_asset_ids": [
+      "AST-0018",
+      "AST-0026",
+      "AST-0028"
+    ]
+  },
+  {
+    "train_id": "TR-0011",
+    "train_number": "12011",
+    "train_name": "Ernakulam-Mumbai Service 11",
+    "train_type": "Superfast",
+    "zone": "Southern Railway",
+    "origin": "Ernakulam",
+    "destination": "Mumbai",
+    "scheduled_departure": "09:15",
+    "coach_count": 22,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.86,
+    "assigned_asset_ids": [
+      "AST-0004",
+      "AST-0043",
+      "AST-0002"
+    ]
+  },
+  {
+    "train_id": "TR-0012",
+    "train_number": "12012",
+    "train_name": "Bangalore-Howrah Service 12",
+    "train_type": "Passenger",
+    "zone": "South Western Railway",
+    "origin": "Bangalore",
+    "destination": "Howrah",
+    "scheduled_departure": "10:00",
+    "coach_count": 18,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.94,
+    "assigned_asset_ids": [
+      "AST-0033",
+      "AST-0053",
+      "AST-0059"
+    ]
+  },
+  {
+    "train_id": "TR-0013",
+    "train_number": "12013",
+    "train_name": "Mumbai-Pune Service 13",
+    "train_type": "Intercity",
+    "zone": "Central Railway",
+    "origin": "Mumbai",
+    "destination": "Pune",
+    "scheduled_departure": "13:45",
+    "coach_count": 17,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.91,
+    "assigned_asset_ids": [
+      "AST-0003",
+      "AST-0023",
+      "AST-0006"
+    ]
+  },
+  {
+    "train_id": "TR-0014",
+    "train_number": "12014",
+    "train_name": "Delhi-Howrah Service 14",
+    "train_type": "Express",
+    "zone": "Northern Railway",
+    "origin": "Delhi",
+    "destination": "Howrah",
+    "scheduled_departure": "16:15",
+    "coach_count": 18,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.83,
+    "assigned_asset_ids": [
+      "AST-0011",
+      "AST-0017",
+      "AST-0035"
+    ]
+  },
+  {
+    "train_id": "TR-0015",
+    "train_number": "12015",
+    "train_name": "Bangalore-Ernakulam Service 15",
+    "train_type": "Intercity",
+    "zone": "South Western Railway",
+    "origin": "Bangalore",
+    "destination": "Ernakulam",
+    "scheduled_departure": "18:15",
+    "coach_count": 15,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.97,
+    "assigned_asset_ids": [
+      "AST-0053",
+      "AST-0057",
+      "AST-0043"
+    ]
+  },
+  {
+    "train_id": "TR-0016",
+    "train_number": "12016",
+    "train_name": "Mumbai-Delhi Service 16",
+    "train_type": "Intercity",
+    "zone": "Central Railway",
+    "origin": "Mumbai",
+    "destination": "Delhi",
+    "scheduled_departure": "06:45",
+    "coach_count": 14,
+    "priority_class": "PREMIUM",
+    "asset_availability_required": 0.92,
+    "assigned_asset_ids": [
+      "AST-0015",
+      "AST-0005",
+      "AST-0004"
+    ]
+  },
+  {
+    "train_id": "TR-0017",
+    "train_number": "12017",
+    "train_name": "Pune-Howrah Service 17",
+    "train_type": "Intercity",
+    "zone": "Central Railway",
+    "origin": "Pune",
+    "destination": "Howrah",
+    "scheduled_departure": "18:00",
+    "coach_count": 12,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.96,
+    "assigned_asset_ids": [
+      "AST-0027",
+      "AST-0021",
+      "AST-0038"
+    ]
+  },
+  {
+    "train_id": "TR-0018",
+    "train_number": "12018",
+    "train_name": "Delhi-Bangalore Service 18",
+    "train_type": "Passenger",
+    "zone": "Northern Railway",
+    "origin": "Delhi",
+    "destination": "Bangalore",
+    "scheduled_departure": "11:00",
+    "coach_count": 11,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.9,
+    "assigned_asset_ids": [
+      "AST-0056",
+      "AST-0014",
+      "AST-0059"
+    ]
+  },
+  {
+    "train_id": "TR-0019",
+    "train_number": "12019",
+    "train_name": "Howrah-Ernakulam Service 19",
+    "train_type": "Superfast",
+    "zone": "Eastern Railway",
+    "origin": "Howrah",
+    "destination": "Ernakulam",
+    "scheduled_departure": "04:00",
+    "coach_count": 17,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.84,
+    "assigned_asset_ids": [
+      "AST-0032",
+      "AST-0034",
+      "AST-0047"
+    ]
+  },
+  {
+    "train_id": "TR-0020",
+    "train_number": "12020",
+    "train_name": "Pune-Bangalore Service 20",
+    "train_type": "Intercity",
+    "zone": "Central Railway",
+    "origin": "Pune",
+    "destination": "Bangalore",
+    "scheduled_departure": "15:45",
+    "coach_count": 12,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.93,
+    "assigned_asset_ids": [
+      "AST-0054",
+      "AST-0021",
+      "AST-0053"
+    ]
+  },
+  {
+    "train_id": "TR-0021",
+    "train_number": "12021",
+    "train_name": "Mumbai-Howrah Service 21",
+    "train_type": "Superfast",
+    "zone": "Central Railway",
+    "origin": "Mumbai",
+    "destination": "Howrah",
+    "scheduled_departure": "05:45",
+    "coach_count": 22,
+    "priority_class": "PREMIUM",
+    "asset_availability_required": 0.92,
+    "assigned_asset_ids": [
+      "AST-0035",
+      "AST-0010",
+      "AST-0004"
+    ]
+  },
+  {
+    "train_id": "TR-0022",
+    "train_number": "12022",
+    "train_name": "Delhi-Pune Service 22",
+    "train_type": "Passenger",
+    "zone": "Northern Railway",
+    "origin": "Delhi",
+    "destination": "Pune",
+    "scheduled_departure": "11:15",
+    "coach_count": 11,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.97,
+    "assigned_asset_ids": [
+      "AST-0028",
+      "AST-0012",
+      "AST-0024"
+    ]
+  },
+  {
+    "train_id": "TR-0023",
+    "train_number": "12023",
+    "train_name": "Ernakulam-Mumbai Service 23",
+    "train_type": "Superfast",
+    "zone": "Southern Railway",
+    "origin": "Ernakulam",
+    "destination": "Mumbai",
+    "scheduled_departure": "04:30",
+    "coach_count": 14,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.96,
+    "assigned_asset_ids": [
+      "AST-0041",
+      "AST-0042",
+      "AST-0004"
+    ]
+  },
+  {
+    "train_id": "TR-0024",
+    "train_number": "12024",
+    "train_name": "Bangalore-Howrah Service 24",
+    "train_type": "Superfast",
+    "zone": "South Western Railway",
+    "origin": "Bangalore",
+    "destination": "Howrah",
+    "scheduled_departure": "08:45",
+    "coach_count": 10,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.87,
+    "assigned_asset_ids": [
+      "AST-0054",
+      "AST-0056",
+      "AST-0038"
+    ]
+  },
+  {
+    "train_id": "TR-0025",
+    "train_number": "12025",
+    "train_name": "Mumbai-Pune Service 25",
+    "train_type": "Express",
+    "zone": "Central Railway",
+    "origin": "Mumbai",
+    "destination": "Pune",
+    "scheduled_departure": "15:45",
+    "coach_count": 10,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.96,
+    "assigned_asset_ids": [
+      "AST-0026",
+      "AST-0027",
+      "AST-0025"
+    ]
+  },
+  {
+    "train_id": "TR-0026",
+    "train_number": "12026",
+    "train_name": "Delhi-Howrah Service 26",
+    "train_type": "Express",
+    "zone": "Northern Railway",
+    "origin": "Delhi",
+    "destination": "Howrah",
+    "scheduled_departure": "06:45",
+    "coach_count": 17,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.92,
+    "assigned_asset_ids": [
+      "AST-0013",
+      "AST-0018",
+      "AST-0033"
+    ]
+  },
+  {
+    "train_id": "TR-0027",
+    "train_number": "12027",
+    "train_name": "Bangalore-Ernakulam Service 27",
+    "train_type": "Superfast",
+    "zone": "South Western Railway",
+    "origin": "Bangalore",
+    "destination": "Ernakulam",
+    "scheduled_departure": "11:30",
+    "coach_count": 11,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.84,
+    "assigned_asset_ids": [
+      "AST-0056",
+      "AST-0043",
+      "AST-0045"
+    ]
+  },
+  {
+    "train_id": "TR-0028",
+    "train_number": "12028",
+    "train_name": "Mumbai-Delhi Service 28",
+    "train_type": "Superfast",
+    "zone": "Central Railway",
+    "origin": "Mumbai",
+    "destination": "Delhi",
+    "scheduled_departure": "02:30",
+    "coach_count": 13,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.84,
+    "assigned_asset_ids": [
+      "AST-0005",
+      "AST-0004",
+      "AST-0002"
+    ]
+  },
+  {
+    "train_id": "TR-0029",
+    "train_number": "12029",
+    "train_name": "Pune-Howrah Service 29",
+    "train_type": "Express",
+    "zone": "Central Railway",
+    "origin": "Pune",
+    "destination": "Howrah",
+    "scheduled_departure": "21:15",
+    "coach_count": 22,
+    "priority_class": "PREMIUM",
+    "asset_availability_required": 0.81,
+    "assigned_asset_ids": [
+      "AST-0028",
+      "AST-0029",
+      "AST-0027"
+    ]
+  },
+  {
+    "train_id": "TR-0030",
+    "train_number": "12030",
+    "train_name": "Delhi-Bangalore Service 30",
+    "train_type": "Express",
+    "zone": "Northern Railway",
+    "origin": "Delhi",
+    "destination": "Bangalore",
+    "scheduled_departure": "09:45",
+    "coach_count": 9,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.84,
+    "assigned_asset_ids": [
+      "AST-0052",
+      "AST-0018",
+      "AST-0053"
+    ]
+  },
+  {
+    "train_id": "TR-0031",
+    "train_number": "12031",
+    "train_name": "Howrah-Ernakulam Service 31",
+    "train_type": "Passenger",
+    "zone": "Eastern Railway",
+    "origin": "Howrah",
+    "destination": "Ernakulam",
+    "scheduled_departure": "01:00",
+    "coach_count": 17,
+    "priority_class": "PREMIUM",
+    "asset_availability_required": 0.82,
+    "assigned_asset_ids": [
+      "AST-0043",
+      "AST-0046",
+      "AST-0047"
+    ]
+  },
+  {
+    "train_id": "TR-0032",
+    "train_number": "12032",
+    "train_name": "Pune-Bangalore Service 32",
+    "train_type": "Intercity",
+    "zone": "Central Railway",
+    "origin": "Pune",
+    "destination": "Bangalore",
+    "scheduled_departure": "12:45",
+    "coach_count": 8,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.89,
+    "assigned_asset_ids": [
+      "AST-0054",
+      "AST-0027",
+      "AST-0026"
+    ]
+  },
+  {
+    "train_id": "TR-0033",
+    "train_number": "12033",
+    "train_name": "Mumbai-Howrah Service 33",
+    "train_type": "Superfast",
+    "zone": "Central Railway",
+    "origin": "Mumbai",
+    "destination": "Howrah",
+    "scheduled_departure": "21:45",
+    "coach_count": 15,
+    "priority_class": "PREMIUM",
+    "asset_availability_required": 0.96,
+    "assigned_asset_ids": [
+      "AST-0001",
+      "AST-0006",
+      "AST-0033"
+    ]
+  },
+  {
+    "train_id": "TR-0034",
+    "train_number": "12034",
+    "train_name": "Delhi-Pune Service 34",
+    "train_type": "Intercity",
+    "zone": "Northern Railway",
+    "origin": "Delhi",
+    "destination": "Pune",
+    "scheduled_departure": "15:45",
+    "coach_count": 9,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.86,
+    "assigned_asset_ids": [
+      "AST-0028",
+      "AST-0016",
+      "AST-0012"
+    ]
+  },
+  {
+    "train_id": "TR-0035",
+    "train_number": "12035",
+    "train_name": "Ernakulam-Mumbai Service 35",
+    "train_type": "Intercity",
+    "zone": "Southern Railway",
+    "origin": "Ernakulam",
+    "destination": "Mumbai",
+    "scheduled_departure": "17:45",
+    "coach_count": 13,
+    "priority_class": "NORMAL",
+    "asset_availability_required": 0.85,
+    "assigned_asset_ids": [
+      "AST-0008",
+      "AST-0001",
+      "AST-0047"
+    ]
+  },
+  {
+    "train_id": "TR-0036",
+    "train_number": "12036",
+    "train_name": "Bangalore-Howrah Service 36",
+    "train_type": "Passenger",
+    "zone": "South Western Railway",
+    "origin": "Bangalore",
+    "destination": "Howrah",
+    "scheduled_departure": "19:15",
+    "coach_count": 17,
+    "priority_class": "HIGH",
+    "asset_availability_required": 0.92,
+    "assigned_asset_ids": [
+      "AST-0059",
+      "AST-0058",
+      "AST-0060"
+    ]
+  }
+]

@@ -1,0 +1,1142 @@
+[
+  {
+    "plan_id": "PLAN-0001",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0053",
+    "asset_id": "AST-0018",
+    "city": "Delhi",
+    "recommended_depot": "Delhi Depot",
+    "recommended_date": "2026-08-17",
+    "priority_score": 51.6,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0002",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0051",
+    "asset_id": "AST-0038",
+    "city": "Howrah",
+    "recommended_depot": "Howrah Depot",
+    "recommended_date": "2026-08-27",
+    "priority_score": 40.6,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0003",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0023",
+    "asset_id": "AST-0006",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-09-25",
+    "priority_score": 73.2,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0004",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0019",
+    "asset_id": "AST-0008",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-10-03",
+    "priority_score": 31.3,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0005",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0088",
+    "asset_id": "AST-0001",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-09-22",
+    "priority_score": 48.4,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0006",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0062",
+    "asset_id": "AST-0046",
+    "city": "Ernakulam",
+    "recommended_depot": "Ernakulam Depot",
+    "recommended_date": "2026-09-16",
+    "priority_score": 20.9,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0007",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0072",
+    "asset_id": "AST-0036",
+    "city": "Howrah",
+    "recommended_depot": "Howrah Depot",
+    "recommended_date": "2026-08-22",
+    "priority_score": 39.6,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0008",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0071",
+    "asset_id": "AST-0054",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-10-07",
+    "priority_score": 89.8,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0009",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0054",
+    "asset_id": "AST-0053",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-10-13",
+    "priority_score": 47.4,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0010",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0008",
+    "asset_id": "AST-0039",
+    "city": "Howrah",
+    "recommended_depot": "Howrah Depot",
+    "recommended_date": "2026-08-22",
+    "priority_score": 70.1,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0011",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0013",
+    "asset_id": "AST-0034",
+    "city": "Howrah",
+    "recommended_depot": "Howrah Depot",
+    "recommended_date": "2026-09-09",
+    "priority_score": 54.7,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0012",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0045",
+    "asset_id": "AST-0017",
+    "city": "Delhi",
+    "recommended_depot": "Delhi Depot",
+    "recommended_date": "2026-09-01",
+    "priority_score": 22.0,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0013",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0038",
+    "asset_id": "AST-0030",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-08-16",
+    "priority_score": 90.6,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0014",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0058",
+    "asset_id": "AST-0059",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-09-23",
+    "priority_score": 21.3,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0015",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0002",
+    "asset_id": "AST-0001",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-10-12",
+    "priority_score": 98.3,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0016",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0007",
+    "asset_id": "AST-0022",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-10-05",
+    "priority_score": 91.0,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0017",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0056",
+    "asset_id": "AST-0020",
+    "city": "Delhi",
+    "recommended_depot": "Delhi Depot",
+    "recommended_date": "2026-10-05",
+    "priority_score": 24.6,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0018",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0065",
+    "asset_id": "AST-0018",
+    "city": "Delhi",
+    "recommended_depot": "Delhi Depot",
+    "recommended_date": "2026-09-17",
+    "priority_score": 65.8,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0019",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0075",
+    "asset_id": "AST-0033",
+    "city": "Howrah",
+    "recommended_depot": "Howrah Depot",
+    "recommended_date": "2026-08-20",
+    "priority_score": 38.9,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0020",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0064",
+    "asset_id": "AST-0060",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-10-05",
+    "priority_score": 65.8,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0021",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0090",
+    "asset_id": "AST-0020",
+    "city": "Delhi",
+    "recommended_depot": "Delhi Depot",
+    "recommended_date": "2026-09-26",
+    "priority_score": 86.6,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0022",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0086",
+    "asset_id": "AST-0055",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-08-23",
+    "priority_score": 26.0,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0023",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0015",
+    "asset_id": "AST-0003",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-08-30",
+    "priority_score": 28.8,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0024",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0035",
+    "asset_id": "AST-0008",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-08-31",
+    "priority_score": 52.3,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0025",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0079",
+    "asset_id": "AST-0011",
+    "city": "Delhi",
+    "recommended_depot": "Delhi Depot",
+    "recommended_date": "2026-09-26",
+    "priority_score": 90.7,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0026",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0048",
+    "asset_id": "AST-0025",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-08-22",
+    "priority_score": 85.1,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0027",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0028",
+    "asset_id": "AST-0009",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-08-29",
+    "priority_score": 89.6,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0028",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0018",
+    "asset_id": "AST-0029",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-10-10",
+    "priority_score": 74.4,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0029",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0003",
+    "asset_id": "AST-0049",
+    "city": "Ernakulam",
+    "recommended_depot": "Ernakulam Depot",
+    "recommended_date": "2026-10-11",
+    "priority_score": 74.1,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0030",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0074",
+    "asset_id": "AST-0049",
+    "city": "Ernakulam",
+    "recommended_depot": "Ernakulam Depot",
+    "recommended_date": "2026-09-05",
+    "priority_score": 76.7,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0031",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0037",
+    "asset_id": "AST-0042",
+    "city": "Ernakulam",
+    "recommended_depot": "Ernakulam Depot",
+    "recommended_date": "2026-10-04",
+    "priority_score": 50.4,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0032",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0030",
+    "asset_id": "AST-0043",
+    "city": "Ernakulam",
+    "recommended_depot": "Ernakulam Depot",
+    "recommended_date": "2026-09-11",
+    "priority_score": 29.5,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0033",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0011",
+    "asset_id": "AST-0012",
+    "city": "Delhi",
+    "recommended_depot": "Delhi Depot",
+    "recommended_date": "2026-08-22",
+    "priority_score": 86.3,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0034",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0077",
+    "asset_id": "AST-0059",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-10-09",
+    "priority_score": 42.1,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0035",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0069",
+    "asset_id": "AST-0028",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-09-19",
+    "priority_score": 42.2,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0036",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0034",
+    "asset_id": "AST-0026",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-09-11",
+    "priority_score": 18.4,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0037",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0025",
+    "asset_id": "AST-0005",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-09-09",
+    "priority_score": 44.7,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0038",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0009",
+    "asset_id": "AST-0056",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-09-13",
+    "priority_score": 32.2,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0039",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0076",
+    "asset_id": "AST-0060",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-09-28",
+    "priority_score": 23.0,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0040",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0082",
+    "asset_id": "AST-0015",
+    "city": "Delhi",
+    "recommended_depot": "Delhi Depot",
+    "recommended_date": "2026-09-30",
+    "priority_score": 71.0,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0041",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0039",
+    "asset_id": "AST-0003",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-10-06",
+    "priority_score": 48.7,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0042",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0087",
+    "asset_id": "AST-0010",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-09-02",
+    "priority_score": 16.3,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0043",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0004",
+    "asset_id": "AST-0027",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-10-07",
+    "priority_score": 86.3,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0044",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0068",
+    "asset_id": "AST-0026",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-10-04",
+    "priority_score": 22.8,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0045",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0027",
+    "asset_id": "AST-0021",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-09-27",
+    "priority_score": 60.6,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0046",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0078",
+    "asset_id": "AST-0036",
+    "city": "Howrah",
+    "recommended_depot": "Howrah Depot",
+    "recommended_date": "2026-10-02",
+    "priority_score": 74.5,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0047",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0047",
+    "asset_id": "AST-0004",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-08-28",
+    "priority_score": 11.9,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0048",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0024",
+    "asset_id": "AST-0005",
+    "city": "Mumbai",
+    "recommended_depot": "Mumbai Depot",
+    "recommended_date": "2026-09-26",
+    "priority_score": 50.2,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0049",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0031",
+    "asset_id": "AST-0050",
+    "city": "Ernakulam",
+    "recommended_depot": "Ernakulam Depot",
+    "recommended_date": "2026-09-17",
+    "priority_score": 27.0,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0050",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0066",
+    "asset_id": "AST-0044",
+    "city": "Ernakulam",
+    "recommended_depot": "Ernakulam Depot",
+    "recommended_date": "2026-09-21",
+    "priority_score": 53.1,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0051",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0061",
+    "asset_id": "AST-0021",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-09-07",
+    "priority_score": 95.0,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0052",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0036",
+    "asset_id": "AST-0048",
+    "city": "Ernakulam",
+    "recommended_depot": "Ernakulam Depot",
+    "recommended_date": "2026-08-19",
+    "priority_score": 83.8,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0053",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0001",
+    "asset_id": "AST-0057",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-08-30",
+    "priority_score": 94.7,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0054",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0063",
+    "asset_id": "AST-0041",
+    "city": "Ernakulam",
+    "recommended_depot": "Ernakulam Depot",
+    "recommended_date": "2026-09-16",
+    "priority_score": 84.9,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0055",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0081",
+    "asset_id": "AST-0014",
+    "city": "Delhi",
+    "recommended_depot": "Delhi Depot",
+    "recommended_date": "2026-10-10",
+    "priority_score": 92.3,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0056",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0012",
+    "asset_id": "AST-0056",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-09-23",
+    "priority_score": 93.3,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0057",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0052",
+    "asset_id": "AST-0029",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-09-05",
+    "priority_score": 75.8,
+    "objective": "MAXIMIZE_ASSET_AVAILABILITY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "SCHEDULED"
+  },
+  {
+    "plan_id": "PLAN-0058",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0085",
+    "asset_id": "AST-0014",
+    "city": "Delhi",
+    "recommended_depot": "Delhi Depot",
+    "recommended_date": "2026-09-05",
+    "priority_score": 90.3,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "PENDING_REVIEW"
+  },
+  {
+    "plan_id": "PLAN-0059",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0026",
+    "asset_id": "AST-0051",
+    "city": "Bangalore",
+    "recommended_depot": "Bangalore Depot",
+    "recommended_date": "2026-10-12",
+    "priority_score": 40.9,
+    "objective": "REDUCE_FAILURE_RISK",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  },
+  {
+    "plan_id": "PLAN-0060",
+    "planning_date": "2026-09-05",
+    "maintenance_id": "MNT-0089",
+    "asset_id": "AST-0027",
+    "city": "Pune",
+    "recommended_depot": "Pune Depot",
+    "recommended_date": "2026-09-25",
+    "priority_score": 65.5,
+    "objective": "MINIMIZE_MAINTENANCE_DELAY",
+    "constraints_checked": [
+      "Depot Capacity",
+      "Technician Capacity",
+      "Spare Availability",
+      "Traffic Blocks"
+    ],
+    "explanation": "Priority is calculated using failure risk, due date, asset condition and available resources.",
+    "planner_status": "ACCEPTED"
+  }
+]
