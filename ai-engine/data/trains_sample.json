@@ -1,0 +1,6 @@
+[
+  { "train_id": "TR-0003", "priority_class": "NORMAL", "assigned_asset_ids": ["AST-0057", "AST-0060"] },
+  { "train_id": "TR-0004", "priority_class": "HIGH", "assigned_asset_ids": ["AST-0001"] },
+  { "train_id": "TR-0006", "priority_class": "NORMAL", "assigned_asset_ids": ["AST-0012"] },
+  { "train_id": "TR-0008", "priority_class": "NORMAL", "assigned_asset_ids": ["AST-0030"] }
+]

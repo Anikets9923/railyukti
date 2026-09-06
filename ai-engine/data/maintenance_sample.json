@@ -1,0 +1,7 @@
+[
+  { "maintenance_id": "MNT-0001", "asset_id": "AST-0057", "days_overdue": 6, "failure_risk": 0.46, "spares_available": true, "technician_available": false, "duration_hours": 24 },
+  { "maintenance_id": "MNT-0002", "asset_id": "AST-0001", "days_overdue": 0, "failure_risk": 0.89, "spares_available": true, "technician_available": true, "duration_hours": 6 },
+  { "maintenance_id": "MNT-0011", "asset_id": "AST-0012", "days_overdue": 14, "failure_risk": 0.846, "spares_available": false, "technician_available": true, "duration_hours": 12 },
+  { "maintenance_id": "MNT-0038", "asset_id": "AST-0030", "days_overdue": 20, "failure_risk": 0.551, "spares_available": true, "technician_available": false, "duration_hours": 4 },
+  { "maintenance_id": "MNT-0064", "asset_id": "AST-0060", "days_overdue": 0, "failure_risk": 0.413, "spares_available": true, "technician_available": false, "duration_hours": 16 }
+]

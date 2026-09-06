@@ -1,0 +1,7 @@
+[
+  { "asset_id": "AST-0057", "severity": "LOW", "safety_related": true },
+  { "asset_id": "AST-0001", "severity": "HIGH", "safety_related": true },
+  { "asset_id": "AST-0012", "severity": "MEDIUM", "safety_related": true },
+  { "asset_id": "AST-0030", "severity": "CRITICAL", "safety_related": true },
+  { "asset_id": "AST-0060", "severity": "CRITICAL", "safety_related": true }
+]

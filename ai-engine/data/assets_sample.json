@@ -1,0 +1,7 @@
+[
+  { "asset_id": "AST-0001", "asset_type": "EMU Coach", "city": "Mumbai", "criticality": "MEDIUM", "condition_score": 0.451 },
+  { "asset_id": "AST-0057", "asset_type": "Passenger Coach", "city": "Bangalore", "criticality": "HIGH", "condition_score": 0.594 },
+  { "asset_id": "AST-0012", "asset_type": "Electric Locomotive", "city": "Delhi", "criticality": "MEDIUM", "condition_score": 0.791 },
+  { "asset_id": "AST-0030", "asset_type": "Diesel Locomotive", "city": "Pune", "criticality": "HIGH", "condition_score": 0.801 },
+  { "asset_id": "AST-0060", "asset_type": "Freight Wagon", "city": "Bangalore", "criticality": "MEDIUM", "condition_score": 0.489 }
+]
