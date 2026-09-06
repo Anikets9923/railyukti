@@ -21,20 +21,17 @@ async function listAssets(query) {
   if (criticality) where.criticality = criticality;
   if (status) where.status = status;
 
-  const { total, items } = await prisma.$transaction(async (transaction) => {
-    const total = await transaction.asset.count({ where });
-    const items = await transaction.asset.findMany({
-      where,
-      skip,
-      take: limit,
-      orderBy: { assetCode: "asc" },
-      include: {
-        department: { select: { code: true, name: true } },
-        section: { select: { code: true, name: true } },
-        _count: { select: { defects: true, maintenanceTasks: true } },
-      },
-    });
-    return { total, items };
+  const total = await prisma.asset.count({ where });
+  const items = await prisma.asset.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: { assetCode: "asc" },
+    include: {
+      department: { select: { code: true, name: true } },
+      section: { select: { code: true, name: true } },
+      _count: { select: { defects: true, maintenanceTasks: true } },
+    },
   });
 
   return { items, pagination: buildPagination(total, page, limit) };

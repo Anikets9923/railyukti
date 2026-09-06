@@ -49,21 +49,18 @@ async function listMaintenanceTasks(query) {
     where.dueDate = { gte: date, lt: nextDate };
   }
 
-  const { total, items } = await prisma.$transaction(async (transaction) => {
-    const total = await transaction.maintenanceTask.count({ where });
-    const items = await transaction.maintenanceTask.findMany({
-      where,
-      skip,
-      take: limit,
-      orderBy: [{ priorityScore: "desc" }, { dueDate: "asc" }],
-      include: {
-        asset: { select: { assetCode: true, assetType: true, criticality: true } },
-        department: { select: { code: true, name: true } },
-        section: { select: { code: true, name: true } },
-        _count: { select: { scheduledTasks: true } },
-      },
-    });
-    return { total, items };
+  const total = await prisma.maintenanceTask.count({ where });
+  const items = await prisma.maintenanceTask.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: [{ priorityScore: "desc" }, { dueDate: "asc" }],
+    include: {
+      asset: { select: { assetCode: true, assetType: true, criticality: true } },
+      department: { select: { code: true, name: true } },
+      section: { select: { code: true, name: true } },
+      _count: { select: { scheduledTasks: true } },
+    },
   });
 
   return { items, pagination: buildPagination(total, page, limit) };
@@ -104,14 +101,8 @@ async function validateTaskReferences(data) {
 
 async function createMaintenanceTask(data) {
   await validateTaskReferences(data);
-  return prisma.maintenanceTask.create({
-    data,
-    include: {
-      asset: { select: { assetCode: true, assetType: true } },
-      department: { select: { code: true, name: true } },
-      section: { select: { code: true, name: true } },
-    },
-  });
+  const task = await prisma.maintenanceTask.create({ data });
+  return getMaintenanceTaskById(task.id);
 }
 
 async function updateMaintenanceTask(id, data) {
@@ -121,15 +112,8 @@ async function updateMaintenanceTask(id, data) {
     departmentId: data.departmentId || existingTask.departmentId,
     sectionId: data.sectionId || existingTask.sectionId,
   });
-  return prisma.maintenanceTask.update({
-    where: { id },
-    data,
-    include: {
-      asset: { select: { assetCode: true, assetType: true } },
-      department: { select: { code: true, name: true } },
-      section: { select: { code: true, name: true } },
-    },
-  });
+  await prisma.maintenanceTask.update({ where: { id }, data });
+  return getMaintenanceTaskById(id);
 }
 
 module.exports = {

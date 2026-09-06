@@ -250,16 +250,15 @@ async function seed() {
     }
   });
 
-  const counts = await Promise.all([
-    prisma.department.count(),
-    prisma.section.count(),
-    prisma.asset.count(),
-    prisma.defect.count(),
-    prisma.maintenanceTask.count(),
-    prisma.train.count(),
-    prisma.trainSchedule.count(),
-    prisma.blockWindow.count(),
-  ]);
+  const counts = [];
+  counts.push(await prisma.department.count());
+  counts.push(await prisma.section.count());
+  counts.push(await prisma.asset.count());
+  counts.push(await prisma.defect.count());
+  counts.push(await prisma.maintenanceTask.count());
+  counts.push(await prisma.train.count());
+  counts.push(await prisma.trainSchedule.count());
+  counts.push(await prisma.blockWindow.count());
 
   console.log("Synthetic railway planning data seeded successfully.");
   console.table({

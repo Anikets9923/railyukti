@@ -5,56 +5,26 @@ const pendingTaskStatuses = [MaintenanceTaskStatus.PLANNED, MaintenanceTaskStatu
 async function getDashboardAnalytics() {
   const today = startOfToday();
 
-  const [
-    totalMaintenanceTasks,
-    pendingTasks,
-    criticalTasks,
-    overdueTasks,
-    scheduledTaskRecords,
-    unscheduledTasks,
-    totalBlockWindows,
-    departments,
-    blockWindows,
-    blockPlans,
-  ] = await Promise.all([
-    prisma.maintenanceTask.count(),
-    prisma.maintenanceTask.count({ where: { status: { in: pendingTaskStatuses } } }),
-    prisma.maintenanceTask.count({ where: { severity: "CRITICAL" } }),
-    prisma.maintenanceTask.count({
-      where: {
-        OR: [{ overdueDays: { gt: 0 } }, { dueDate: { lt: today } }],
-      },
-    }),
-    prisma.scheduledTask.findMany({
-      select: { maintenanceTaskId: true },
-    }),
-    prisma.maintenanceTask.count({
-      where: { scheduledTasks: { none: {} } },
-    }),
-    prisma.blockWindow.count(),
-    prisma.department.findMany({
-      orderBy: { code: "asc" },
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        _count: { select: { maintenanceTasks: true } },
-      },
-    }),
-    prisma.blockWindow.findMany({
-      select: { sectionId: true, date: true, startTime: true, endTime: true },
-    }),
-    prisma.blockPlan.findMany({
-      where: { status: { not: "CANCELLED" } },
-      select: {
-        sectionId: true,
-        date: true,
-        startTime: true,
-        endTime: true,
-        utilization: true,
-      },
-    }),
-  ]);
+  const totalMaintenanceTasks = await prisma.maintenanceTask.count();
+  const pendingTasks = await prisma.maintenanceTask.count({ where: { status: { in: pendingTaskStatuses } } });
+  const criticalTasks = await prisma.maintenanceTask.count({ where: { severity: "CRITICAL" } });
+  const overdueTasks = await prisma.maintenanceTask.count({
+    where: { OR: [{ overdueDays: { gt: 0 } }, { dueDate: { lt: today } }] },
+  });
+  const scheduledTaskRecords = await prisma.scheduledTask.findMany({ select: { maintenanceTaskId: true } });
+  const unscheduledTasks = await prisma.maintenanceTask.count({ where: { scheduledTasks: { none: {} } } });
+  const totalBlockWindows = await prisma.blockWindow.count();
+  const departments = await prisma.department.findMany({
+    orderBy: { code: "asc" },
+    select: { id: true, code: true, name: true, _count: { select: { maintenanceTasks: true } } },
+  });
+  const blockWindows = await prisma.blockWindow.findMany({
+    select: { sectionId: true, date: true, startTime: true, endTime: true },
+  });
+  const blockPlans = await prisma.blockPlan.findMany({
+    where: { status: { not: "CANCELLED" } },
+    select: { sectionId: true, date: true, startTime: true, endTime: true, utilization: true },
+  });
 
   const scheduledByDepartment = await getScheduledTaskCountsByDepartment();
   const scheduledTaskIds = new Set(scheduledTaskRecords.map((record) => record.maintenanceTaskId));

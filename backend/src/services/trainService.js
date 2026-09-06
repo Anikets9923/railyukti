@@ -11,15 +11,12 @@ const { TrainScheduleStatus } = require("@prisma/client");
 
 async function listTrains(query) {
   const { page, limit, skip } = parsePagination(query);
-  const { total, items } = await prisma.$transaction(async (transaction) => {
-    const total = await transaction.train.count();
-    const items = await transaction.train.findMany({
-      skip,
-      take: limit,
-      orderBy: { trainNumber: "asc" },
-      include: { _count: { select: { schedules: true } } },
-    });
-    return { total, items };
+  const total = await prisma.train.count();
+  const items = await prisma.train.findMany({
+    skip,
+    take: limit,
+    orderBy: { trainNumber: "asc" },
+    include: { _count: { select: { schedules: true } } },
   });
   return { items, pagination: buildPagination(total, page, limit) };
 }
@@ -47,19 +44,16 @@ async function listSchedules(query) {
   if (status) where.status = status;
   if (query.date !== undefined) where.date = parseDateOnly(query.date, "date");
 
-  const { total, items } = await prisma.$transaction(async (transaction) => {
-    const total = await transaction.trainSchedule.count({ where });
-    const items = await transaction.trainSchedule.findMany({
-      where,
-      skip,
-      take: limit,
-      orderBy: [{ date: "asc" }, { arrivalTime: "asc" }],
-      include: {
-        train: { select: { trainNumber: true, name: true, trainType: true } },
-        section: { select: { code: true, name: true } },
-      },
-    });
-    return { total, items };
+  const total = await prisma.trainSchedule.count({ where });
+  const items = await prisma.trainSchedule.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: [{ date: "asc" }, { arrivalTime: "asc" }],
+    include: {
+      train: { select: { trainNumber: true, name: true, trainType: true } },
+      section: { select: { code: true, name: true } },
+    },
   });
   return { items, pagination: buildPagination(total, page, limit) };
 }

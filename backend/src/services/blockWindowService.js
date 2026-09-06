@@ -19,16 +19,13 @@ async function listBlockWindows(query, onlyAvailable = false) {
   else if (status) where.status = status;
   if (query.date !== undefined) where.date = parseDateOnly(query.date, "date");
 
-  const { total, items } = await prisma.$transaction(async (transaction) => {
-    const total = await transaction.blockWindow.count({ where });
-    const items = await transaction.blockWindow.findMany({
-      where,
-      skip,
-      take: limit,
-      orderBy: [{ date: "asc" }, { startTime: "asc" }],
-      include: { section: { select: { code: true, name: true } } },
-    });
-    return { total, items };
+  const total = await prisma.blockWindow.count({ where });
+  const items = await prisma.blockWindow.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: [{ date: "asc" }, { startTime: "asc" }],
+    include: { section: { select: { code: true, name: true } } },
   });
   return { items, pagination: buildPagination(total, page, limit) };
 }

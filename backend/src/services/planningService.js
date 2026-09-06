@@ -19,19 +19,16 @@ async function listBlockPlans(query) {
   if (status) where.status = status;
   if (query.date !== undefined) where.date = parseDateOnly(query.date, "date");
 
-  const { total, items } = await prisma.$transaction(async (transaction) => {
-    const total = await transaction.blockPlan.count({ where });
-    const items = await transaction.blockPlan.findMany({
-      where,
-      skip,
-      take: limit,
-      orderBy: [{ date: "asc" }, { priority: "desc" }],
-      include: {
-        section: { select: { code: true, name: true } },
-        _count: { select: { scheduledTasks: true } },
-      },
-    });
-    return { total, items };
+  const total = await prisma.blockPlan.count({ where });
+  const items = await prisma.blockPlan.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: [{ date: "asc" }, { priority: "desc" }],
+    include: {
+      section: { select: { code: true, name: true } },
+      _count: { select: { scheduledTasks: true } },
+    },
   });
   return { items, pagination: buildPagination(total, page, limit) };
 }
@@ -83,24 +80,22 @@ async function generatePlan({ startDate, endDate, departments }) {
   });
 
   const assetIds = maintenanceTasks.map((task) => task.assetId);
-  const [assets, trainSchedules, blockWindows] = await Promise.all([
-    prisma.asset.findMany({
-      where: { id: { in: assetIds } },
-      select: { id: true, assetCode: true, criticality: true, sectionId: true },
-    }),
-    prisma.trainSchedule.findMany({
-      where: { date: { gte: startDate, lt: endExclusive } },
-      select: { sectionId: true, date: true, arrivalTime: true, departureTime: true },
-    }),
-    prisma.blockWindow.findMany({
-      where: {
-        date: { gte: startDate, lt: endExclusive },
-        status: BlockWindowStatus.AVAILABLE,
-      },
-      include: { section: { select: { code: true } } },
-      orderBy: [{ date: "asc" }, { startTime: "asc" }],
-    }),
-  ]);
+  const assets = await prisma.asset.findMany({
+    where: { id: { in: assetIds } },
+    select: { id: true, assetCode: true, criticality: true, sectionId: true },
+  });
+  const trainSchedules = await prisma.trainSchedule.findMany({
+    where: { date: { gte: startDate, lt: endExclusive } },
+    select: { sectionId: true, date: true, arrivalTime: true, departureTime: true },
+  });
+  const blockWindows = await prisma.blockWindow.findMany({
+    where: {
+      date: { gte: startDate, lt: endExclusive },
+      status: BlockWindowStatus.AVAILABLE,
+    },
+    include: { section: { select: { code: true } } },
+    orderBy: [{ date: "asc" }, { startTime: "asc" }],
+  });
 
   const trafficBySection = countTrafficBySection(trainSchedules);
   const aiInput = maintenanceTasks.map((task) => ({
