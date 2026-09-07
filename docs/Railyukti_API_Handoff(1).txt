@@ -1,0 +1,292 @@
+RAILYUKTI BACKEND API HANDOFF
+================================
+
+Base URL
+--------
+http://<BACKEND_URL>/api
+
+Replace <BACKEND_URL> with the deployed backend URL or tunnel URL.
+
+IMPORTANT
+---------
+This document is based on the current backend API contract discussed for the Railyukti SIH 2026 prototype. Confirm route names against the latest backend implementation before frontend integration.
+
+1. HEALTH
+---------
+GET /health
+Purpose: Check backend health.
+
+2. ASSETS
+---------
+GET /assets
+Purpose: Get all assets.
+
+GET /assets/:id
+Purpose: Get asset details.
+
+GET /assets/:id/failure-risk
+Purpose: Get failure-risk information for an asset.
+
+GET /assets/:id/spares
+Purpose: Get spare availability related to an asset.
+
+3. MAINTENANCE
+--------------
+GET /maintenance
+Purpose: Get all maintenance tasks.
+
+GET /maintenance/:id
+Purpose: Get maintenance task details.
+
+POST /maintenance
+Purpose: Create a maintenance task.
+
+PUT /maintenance/:id
+Purpose: Update a maintenance task.
+
+GET /maintenance/:id/failure-risk
+Purpose: Get failure-risk information for a maintenance task.
+
+GET /maintenance/:id/spares
+Purpose: Get spare availability for a maintenance task.
+
+GET /maintenance/:id/technician-availability
+Purpose: Get technician availability for a maintenance task.
+
+4. FAILURE RISK
+---------------
+GET /failure-risk
+Purpose: Get all failure-risk records.
+
+GET /failure-risk/:id
+Purpose: Get a specific failure-risk record.
+
+Optional filter example:
+GET /failure-risk?riskLevel=CRITICAL
+
+5. SPARES
+---------
+GET /spares
+Purpose: Get spare availability records.
+
+GET /spares/:id
+Purpose: Get a specific spare availability record.
+
+Optional filter example:
+GET /spares?status=NOT_AVAILABLE
+
+6. TECHNICIAN AVAILABILITY
+--------------------------
+GET /technicians/availability
+Purpose: Get technician availability records.
+
+GET /technicians/availability/:id
+Purpose: Get a specific technician availability record.
+
+Optional filter example:
+GET /technicians/availability?status=AVAILABLE
+
+7. TRAINS
+---------
+GET /trains
+Purpose: Get all trains.
+
+GET /trains/schedule
+Purpose: Get train schedules.
+
+8. BLOCK WINDOWS
+----------------
+GET /blocks
+Purpose: Get all block windows.
+
+GET /blocks/available
+Purpose: Get available block windows.
+
+9. PLANNING
+-----------
+POST /planning/generate
+Purpose: Generate an optimized maintenance block plan.
+
+GET /planning
+Purpose: Get all generated block plans.
+
+GET /planning/:id
+Purpose: Get details of a specific block plan.
+
+10. ANALYTICS
+-------------
+GET /analytics/dashboard
+Purpose: Get dashboard KPIs and maintenance/planning analytics.
+
+GET /analytics/optimization/:id
+Purpose: Get optimization metrics for a specific plan.
+
+================================
+FRONTEND INTEGRATION FLOW
+================================
+
+Dashboard
+---------
+GET /analytics/dashboard
+
+Maintenance
+-----------
+GET /maintenance
+GET /maintenance/:id
+GET /maintenance/:id/failure-risk
+GET /maintenance/:id/spares
+GET /maintenance/:id/technician-availability
+
+Assets
+------
+GET /assets
+GET /assets/:id
+GET /assets/:id/failure-risk
+GET /assets/:id/spares
+
+Train and Traffic
+-----------------
+GET /trains
+GET /trains/schedule
+GET /blocks
+GET /blocks/available
+
+Planning
+--------
+POST /planning/generate
+GET /planning
+GET /planning/:id
+GET /analytics/optimization/:id
+
+================================
+AI / OPTIMIZATION INTEGRATION
+================================
+
+Overall planning flow:
+
+Maintenance Tasks
++ Assets
++ Failure Risk
++ Spare Availability
++ Technician Availability
++ Trains
++ Train Schedules
++ Block Windows
+        |
+        v
+AI Priority Engine
+        |
+        v
+Optimization Engine
+        |
+        v
+Optimized Block Plan
+        |
+        v
+PostgreSQL
+        |
+        v
+Frontend
+
+AI PRIORITY ENGINE
+------------------
+
+The AI service should primarily determine:
+
+- priorityScore
+- priorityLevel
+- explainable reasons
+
+Suggested AI input fields:
+
+- maintenance severity
+- asset criticality
+- overdue days
+- traffic impact
+- failure risk score
+- failure probability
+- impact score
+- days to expected failure
+
+Failure risk should influence urgency and priority.
+
+SPARE AVAILABILITY
+------------------
+
+Spare availability is mainly a feasibility constraint.
+
+Typical rule:
+
+If spare availability = NOT_AVAILABLE
+then the maintenance task is not currently feasible for scheduling.
+
+TECHNICIAN AVAILABILITY
+-----------------------
+
+Technician availability is mainly a feasibility/resource constraint.
+
+Typical rules:
+
+If available technicians < required technicians
+then the task is not feasible.
+
+If the technician availability window does not overlap with the selected block window
+then the task is not feasible.
+
+OPTIMIZATION ENGINE
+-------------------
+
+The optimizer should consider:
+
+- AI priority score
+- maintenance duration
+- section
+- block availability
+- block duration
+- train schedule conflicts
+- failure risk
+- spare availability
+- technician availability
+- technician skill
+- compatible task grouping
+
+Expected optimizer output concept:
+
+{
+  "blocks": [
+    {
+      "sectionId": "SEC-A1",
+      "start": "2026-09-07T07:00:00Z",
+      "end": "2026-09-07T10:00:00Z",
+      "taskIds": ["MNT-001", "MNT-005"],
+      "utilization": 92,
+      "optimizationScore": 96
+    }
+  ],
+  "unscheduledTasks": [
+    {
+      "taskId": "MNT-012",
+      "reason": "Required spare unavailable"
+    }
+  ]
+}
+
+IMPORTANT RULES
+---------------
+
+Failure Risk:
+"How urgently might this asset or task lead to failure?"
+
+Spare Availability:
+"Are the required materials available?"
+
+Technician Availability:
+"Do we have the required skilled workforce?"
+
+Failure risk should mainly affect PRIORITY.
+
+Spare and technician availability should mainly affect FEASIBILITY.
+
+This project is a decision-support prototype for maintenance block planning. It must not be presented as autonomous railway control.
+
+END OF DOCUMENT
