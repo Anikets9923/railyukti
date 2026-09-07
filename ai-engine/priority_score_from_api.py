@@ -1,48 +1,66 @@
 """
-priority_score.py
+priority_score_from_api.py
 
-WHAT THIS SCRIPT DOES:
-It reads your railway data (assets, maintenance tasks, defects, trains)
-and gives every maintenance task a "priority score" from 0 to 100 --
-like a hospital triage system, but for broken train parts.
+WHAT CHANGED FROM THE ORIGINAL priority_score.py:
+Before: this script opened local .json files on your computer.
+Now: this script sends a request over the network to the backend's
+     server, and asks it for the data instead.
+
+WHY: the backend team wants your service to pull data from their
+     already-built API, rather than them having to package and send
+     you a custom JSON payload every time.
 
 HOW TO RUN IT:
-    python priority_score.py
+    python priority_score_from_api.py
 
-That's it. No servers, no internet, no other teammates needed.
-It just reads the JSON files in the data/ folder and prints results.
+IMPORTANT: the backend server must actually be running first, at
+whatever address BACKEND_BASE_URL below points to -- otherwise this
+script has nothing to ask and will show a connection error.
 """
 
-import json  # this is a built-in Python tool for reading .json files -- no installation needed
+import requests  # a tool for sending "questions" (HTTP requests) to another running program
 
 
 # -----------------------------------------------------------------
-# STEP 1: Load the data files
+# CONFIGURATION -- change this one line depending on what you're testing against
 # -----------------------------------------------------------------
-# json.load() reads a file and turns it into a Python list of dictionaries,
-# which is just Python's way of representing the same JSON you already have.
+# For testing against our pretend backend (mock_backend.py), leave as-is.
+# Once the REAL backend gives you their actual running address, change
+# only this line -- nothing else in the file needs to change.
 
-def load_json(filepath):
-    with open(filepath, "r") as f:
-        return json.load(f)
-
-
-assets = load_json("data/assets_sample.json")
-maintenance_tasks = load_json("data/maintenance_sample.json")
-defects = load_json("data/defects_sample.json")
-trains = load_json("data/trains_sample.json")
+BACKEND_BASE_URL = "http://localhost:5000"
 
 
 # -----------------------------------------------------------------
-# STEP 2: Turn lists into "lookup tables" (dictionaries) by asset_id
+# STEP 1: Fetch data from the backend's endpoints instead of local files
 # -----------------------------------------------------------------
-# Right now, assets/defects/trains are just lists. To quickly find
-# "what do we know about AST-0057?" we build a dictionary where the
-# key is the asset_id -- like an index in a phonebook.
+# requests.get(url) sends a "GET" request -- think of GET as simply
+# asking a question ("what assets do you have?") without changing
+# anything on the other end. .json() converts their answer into a
+# Python list of dictionaries, same shape as before.
+
+def fetch(endpoint_path):
+    url = BACKEND_BASE_URL + endpoint_path
+    response = requests.get(url)
+    response.raise_for_status()  # if something went wrong (e.g. 404, 500), stop here with a clear error
+    return response.json()
+
+
+assets = fetch("/api/assets")
+maintenance_tasks = fetch("/api/maintenance")
+defects = fetch("/api/defects")   # NOTE: confirm with backend this endpoint actually exists on their real server
+trains = fetch("/api/trains")
+
+
+# -----------------------------------------------------------------
+# STEP 2: Everything below this line is EXACTLY THE SAME as before
+# -----------------------------------------------------------------
+# This is the whole point of separating "how we get the data" from
+# "what we do with the data" -- only the fetching changed, the scoring
+# logic didn't need to change at all.
 
 assets_by_id = {a["asset_id"]: a for a in assets}
 
-# An asset can have MORE THAN ONE defect, so this is a dictionary of LISTS.
 defects_by_asset = {}
 for d in defects:
     asset_id = d["asset_id"]
@@ -50,56 +68,33 @@ for d in defects:
         defects_by_asset[asset_id] = []
     defects_by_asset[asset_id].append(d)
 
-
-# -----------------------------------------------------------------
-# STEP 3: The scoring rules
-# -----------------------------------------------------------------
-# These dictionaries just convert words into numbers, so we can do math with them.
-# Think of it like a school grading scale: A=90, B=80, etc.
-
 CRITICALITY_POINTS = {"LOW": 33, "MEDIUM": 66, "HIGH": 100}
 SEVERITY_POINTS = {"LOW": 25, "MEDIUM": 50, "HIGH": 75, "CRITICAL": 100}
 TRAIN_PRIORITY_WEIGHT = {"NORMAL": 1, "HIGH": 1.5, "PREMIUM": 2}
 
 
 def get_urgency_points(days_overdue, failure_risk):
-    """
-    Urgency = a mix of how many days overdue it is, and how likely it is to fail.
-    We cap "days overdue" at 20 days -- past that, it can't get any MORE urgent
-    for scoring purposes (it's already maxed out).
-    """
-    overdue_part = min(days_overdue / 20, 1.0) * 100   # scaled to 0-100
-    risk_part = failure_risk * 100                      # failure_risk is already 0-1, so x100 makes it 0-100
+    overdue_part = min(days_overdue / 20, 1.0) * 100
+    risk_part = failure_risk * 100
     return 0.5 * overdue_part + 0.5 * risk_part
 
 
 def get_overdue_points(days_overdue):
-    """How overdue is this task, on its own, scaled 0-100."""
     return min(days_overdue / 20, 1.0) * 100
 
 
 def get_traffic_impact_points(asset_id):
-    """
-    If lots of important trains depend on this asset, delaying its repair
-    is riskier. We look through every train, check if it needs this asset,
-    and add up how "important" those trains are.
-    """
     total_weight = 0
     for train in trains:
         if asset_id in train["assigned_asset_ids"]:
             total_weight += TRAIN_PRIORITY_WEIGHT.get(train["priority_class"], 1)
-    return min(total_weight * 20, 100)   # scale it and cap at 100
+    return min(total_weight * 20, 100)
 
 
 def get_worst_defect_severity(asset_id):
-    """
-    An asset might have several defects. For scoring, we care about the
-    WORST one (highest severity) -- a train isn't "half broken", the
-    worst problem is the one that matters most.
-    """
     asset_defects = defects_by_asset.get(asset_id, [])
     if not asset_defects:
-        return "LOW"  # no defect on file -> assume low severity
+        return "LOW"
     severities_in_order = ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
     worst = "LOW"
     for d in asset_defects:
@@ -109,13 +104,7 @@ def get_worst_defect_severity(asset_id):
 
 
 def compute_priority_score(task):
-    """
-    This is the main formula. It combines 5 ingredients, each with a
-    different "weight" (importance) -- exactly matching the percentages
-    from the project README: 30% + 25% + 20% + 15% + 10% = 100%.
-    """
     asset = assets_by_id[task["asset_id"]]
-
     criticality_pts = CRITICALITY_POINTS.get(asset["criticality"], 33)
     worst_severity = get_worst_defect_severity(task["asset_id"])
     severity_pts = SEVERITY_POINTS.get(worst_severity, 25)
@@ -134,7 +123,6 @@ def compute_priority_score(task):
 
 
 def get_priority_tier(score):
-    """Turns the number into a human-friendly label."""
     if score >= 80:
         return "CRITICAL"
     elif score >= 60:
@@ -146,7 +134,7 @@ def get_priority_tier(score):
 
 
 # -----------------------------------------------------------------
-# STEP 4: Run the scoring on every task, and print a sorted report
+# STEP 3: Run it and print results -- identical to before
 # -----------------------------------------------------------------
 
 results = []
@@ -160,7 +148,6 @@ for task in maintenance_tasks:
         "priority_tier": tier,
     })
 
-# Sort so the most urgent task shows up first (highest score at the top).
 results.sort(key=lambda r: r["priority_score"], reverse=True)
 
 print(f"{'Maintenance ID':<16}{'Asset':<10}{'Score':<8}{'Tier'}")
