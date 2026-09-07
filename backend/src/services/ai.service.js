@@ -48,13 +48,15 @@ function calculateMockPriorityScore(task) {
   const urgency = normalizeScore(task.urgency, 0);
   const overdueDays = normalizeScore(task.overdueDays, 0, 30);
   const trafficImpact = normalizeScore(task.trafficImpact, 0);
+  const failureRiskScore = normalizeScore(task.failureRiskScore, 0);
 
   const weightedScore =
     criticality * (SCORE_WEIGHTS.criticality / 4) +
     severity * (SCORE_WEIGHTS.severity / 4) +
     urgency * (SCORE_WEIGHTS.urgency / 100) +
     overdueDays * (SCORE_WEIGHTS.overdueDays / 30) +
-    trafficImpact * (SCORE_WEIGHTS.trafficImpact / 100);
+    trafficImpact * (SCORE_WEIGHTS.trafficImpact / 100) +
+    failureRiskScore * 0.1;
 
   return Math.round(Math.min(100, Math.max(0, weightedScore)));
 }

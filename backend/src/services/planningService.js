@@ -75,6 +75,9 @@ async function generatePlan({ startDate, endDate, departments }) {
       asset: { select: { id: true, assetCode: true, criticality: true, sectionId: true } },
       department: { select: { code: true } },
       section: { select: { code: true } },
+      failureRisks: { orderBy: { riskScore: "desc" }, take: 1 },
+      spareAvailabilities: { orderBy: { lastUpdated: "desc" }, take: 1 },
+      technicianAvailabilities: { orderBy: { availableFrom: "asc" }, take: 1 },
     },
     orderBy: [{ priorityScore: "desc" }, { dueDate: "asc" }],
   });
@@ -105,6 +108,16 @@ async function generatePlan({ startDate, endDate, departments }) {
     urgency: calculateUrgency(task.dueDate, startDate),
     overdueDays: task.overdueDays,
     trafficImpact: Math.min(100, (trafficBySection[task.sectionId] || 0) * 20),
+    failureRiskScore: task.failureRisks[0]?.riskScore ?? 0,
+    failureProbability: task.failureRisks[0]?.failureProbability ?? 0,
+    impactScore: task.failureRisks[0]?.impactScore ?? 0,
+    daysToExpectedFailure: task.failureRisks[0]?.daysToExpectedFailure ?? 0,
+    spareAvailability: task.spareAvailabilities[0]?.availabilityStatus ?? null,
+    availableQuantity: task.spareAvailabilities[0]?.availableQuantity ?? null,
+    requiredQuantity: task.spareAvailabilities[0]?.requiredQuantity ?? null,
+    technicianAvailability: task.technicianAvailabilities[0]?.availabilityStatus ?? null,
+    availableTechnicians: task.technicianAvailabilities[0]?.availableTechnicians ?? null,
+    requiredTechnicians: task.technicianAvailabilities[0]?.requiredTechnicians ?? null,
   }));
   const priorityResponse = await aiService.prioritizeTasks(aiInput);
   const priorityByTaskId = new Map(priorityResponse.results.map((result) => [String(result.taskId), result]));
@@ -149,7 +162,7 @@ function buildAssignments(tasks, blockWindows, trainSchedules) {
     const windowTasks = [];
     let usedMinutes = 0;
     for (const task of tasks) {
-      if (assignedTaskIds.has(task.id) || task.sectionId !== blockWindow.sectionId) continue;
+      if (assignedTaskIds.has(task.id) || task.sectionId !== blockWindow.sectionId || !isResourceFeasible(task)) continue;
       if (usedMinutes + task.estimatedDuration > blockWindow.maxDuration) continue;
       windowTasks.push(task);
       assignedTaskIds.add(task.id);
@@ -162,6 +175,14 @@ function buildAssignments(tasks, blockWindows, trainSchedules) {
   }
 
   return assignments;
+}
+
+function isResourceFeasible(task) {
+  const spare = task.spareAvailabilities?.[0];
+  const technician = task.technicianAvailabilities?.[0];
+  if (spare && (spare.availabilityStatus === "NOT_AVAILABLE" || spare.availableQuantity < spare.requiredQuantity)) return false;
+  if (technician && technician.availableTechnicians < technician.requiredTechnicians) return false;
+  return true;
 }
 
 async function createPlans(assignments) {

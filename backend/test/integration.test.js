@@ -29,6 +29,10 @@ before(async () => {
     cwd: path.resolve(__dirname, ".."),
     stdio: "ignore",
   });
+  execFileSync(process.execPath, ["seed/import-dataset.js"], {
+    cwd: path.resolve(__dirname, ".."),
+    stdio: "ignore",
+  });
 
   await new Promise((resolve) => {
     server = app.listen(0, () => {
@@ -141,6 +145,32 @@ test("block window endpoints return all and available windows", async () => {
   const available = await request("/api/blocks/available");
   assert.equal(available.response.status, 200);
   assert.ok(available.body.data.items.every((item) => item.status === "AVAILABLE"));
+});
+
+test("resource-input APIs return imported failure, spare, and technician records", async () => {
+  const risk = await request("/api/failure-risk?riskLevel=HIGH&limit=2");
+  assert.equal(risk.response.status, 200);
+  assert.ok(risk.body.data.items.every((item) => item.riskLevel === "HIGH"));
+  const riskId = risk.body.data.items[0].id;
+
+  const riskDetail = await request(`/api/failure-risk/${riskId}`);
+  assert.equal(riskDetail.response.status, 200);
+
+  const spares = await request("/api/spares?status=NOT_AVAILABLE&limit=2");
+  assert.equal(spares.response.status, 200);
+  assert.ok(spares.body.data.items.every((item) => item.availabilityStatus === "NOT_AVAILABLE"));
+
+  const technicians = await request("/api/technicians/availability?status=AVAILABLE&limit=2");
+  assert.equal(technicians.response.status, 200);
+  assert.ok(technicians.body.data.items.every((item) => item.availabilityStatus === "AVAILABLE"));
+
+  const task = await prisma.maintenanceTask.findFirst({ where: { taskCode: "MNT-0001" } });
+  const assetResource = await request(`/api/assets/${task.assetId}/failure-risk`);
+  const taskSpares = await request(`/api/maintenance/${task.id}/spares`);
+  const taskTechnicians = await request(`/api/maintenance/${task.id}/technician-availability`);
+  assert.equal(assetResource.response.status, 200);
+  assert.equal(taskSpares.response.status, 200);
+  assert.equal(taskTechnicians.response.status, 200);
 });
 
 test("planning generation persists a valid plan and scheduled tasks", async () => {

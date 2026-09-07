@@ -1,255 +1,328 @@
 generator client {
-	provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-	provider = "postgresql"
+  provider = "postgresql"
 }
 
 enum AssetCriticality {
-	LOW
-	MEDIUM
-	HIGH
-	CRITICAL
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }
 
 enum AssetStatus {
-	ACTIVE
-	INACTIVE
-	UNDER_MAINTENANCE
-	RETIRED
+  ACTIVE
+  INACTIVE
+  UNDER_MAINTENANCE
+  RETIRED
 }
 
 enum DefectSeverity {
-	LOW
-	MEDIUM
-	HIGH
-	CRITICAL
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }
 
 enum DefectStatus {
-	OPEN
-	IN_PROGRESS
-	RESOLVED
-	CLOSED
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
 }
 
 enum MaintenanceTaskType {
-	INSPECTION
-	PREVENTIVE
-	CORRECTIVE
-	EMERGENCY
+  INSPECTION
+  PREVENTIVE
+  CORRECTIVE
+  EMERGENCY
 }
 
 enum MaintenanceTaskStatus {
-	PLANNED
-	IN_PROGRESS
-	COMPLETED
-	CANCELLED
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }
 
 enum TrainScheduleStatus {
-	SCHEDULED
-	CANCELLED
-	COMPLETED
+  SCHEDULED
+  CANCELLED
+  COMPLETED
 }
 
 enum BlockWindowStatus {
-	AVAILABLE
-	RESERVED
-	UNAVAILABLE
-	COMPLETED
+  AVAILABLE
+  RESERVED
+  UNAVAILABLE
+  COMPLETED
 }
 
 enum BlockPlanStatus {
-	DRAFT
-	OPTIMIZED
-	APPROVED
-	COMPLETED
-	CANCELLED
+  DRAFT
+  OPTIMIZED
+  APPROVED
+  COMPLETED
+  CANCELLED
 }
 
 enum ScheduledTaskStatus {
-	SCHEDULED
-	IN_PROGRESS
-	COMPLETED
-	SKIPPED
-	CANCELLED
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  SKIPPED
+  CANCELLED
 }
 
 model Department {
-	id               String            @id @default(cuid())
-	code             String            @unique @db.VarChar(20)
-	name             String            @db.VarChar(100)
-	description      String?
-	createdAt        DateTime          @default(now())
-	updatedAt        DateTime          @updatedAt
-	assets           Asset[]
-	maintenanceTasks MaintenanceTask[]
+  id               String            @id @default(cuid())
+  code             String            @unique @db.VarChar(20)
+  name             String            @db.VarChar(100)
+  description      String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  assets           Asset[]
+  maintenanceTasks MaintenanceTask[]
 }
 
 model Section {
-	id               String            @id @default(cuid())
-	code             String            @unique @db.VarChar(30)
-	name             String            @db.VarChar(100)
-	description      String?
-	createdAt        DateTime          @default(now())
-	updatedAt        DateTime          @updatedAt
-	assets           Asset[]
-	maintenanceTasks MaintenanceTask[]
-	trainSchedules   TrainSchedule[]
-	blockWindows     BlockWindow[]
-	blockPlans       BlockPlan[]
+  id               String            @id @default(cuid())
+  code             String            @unique @db.VarChar(30)
+  name             String            @db.VarChar(100)
+  description      String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  assets           Asset[]
+  maintenanceTasks MaintenanceTask[]
+  trainSchedules   TrainSchedule[]
+  blockWindows     BlockWindow[]
+  blockPlans       BlockPlan[]
 }
 
 model Asset {
-	id               String           @id @default(cuid())
-	assetCode        String           @unique @db.VarChar(50)
-	departmentId     String
-	sectionId        String
-	assetType        String           @db.VarChar(100)
-	criticality      AssetCriticality
-	status           AssetStatus       @default(ACTIVE)
-	lastMaintenance  DateTime?        @db.Date
-	nextMaintenance  DateTime?        @db.Date
-	createdAt        DateTime          @default(now())
-	updatedAt        DateTime          @updatedAt
-	department       Department        @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-	section          Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-	defects          Defect[]
-	maintenanceTasks MaintenanceTask[]
+  id                  String              @id @default(cuid())
+  assetCode           String              @unique @db.VarChar(50)
+  departmentId        String
+  sectionId           String
+  assetType           String              @db.VarChar(100)
+  criticality         AssetCriticality
+  status              AssetStatus         @default(ACTIVE)
+  lastMaintenance     DateTime?           @db.Date
+  nextMaintenance     DateTime?           @db.Date
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  department          Department          @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  section             Section             @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  defects             Defect[]
+  maintenanceTasks    MaintenanceTask[]
+  failureRisks        FailureRisk[]
+  spareAvailabilities SpareAvailability[]
 
-	@@index([departmentId])
-	@@index([sectionId])
-	@@index([criticality, status])
+  @@index([departmentId])
+  @@index([sectionId])
+  @@index([criticality, status])
 }
 
 model Defect {
-	id          String         @id @default(cuid())
-	defectCode  String         @unique @db.VarChar(50)
-	assetId     String
-	description String
-	severity    DefectSeverity
-	status      DefectStatus   @default(OPEN)
-	detectedAt  DateTime       @default(now())
-	resolvedAt  DateTime?
-	sourceSystem String?       @db.VarChar(30)
-	createdAt   DateTime       @default(now())
-	updatedAt   DateTime       @updatedAt
-	asset       Asset          @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  id           String         @id @default(cuid())
+  defectCode   String         @unique @db.VarChar(50)
+  assetId      String
+  description  String
+  severity     DefectSeverity
+  status       DefectStatus   @default(OPEN)
+  detectedAt   DateTime       @default(now())
+  resolvedAt   DateTime?
+  sourceSystem String?        @db.VarChar(30)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  asset        Asset          @relation(fields: [assetId], references: [id], onDelete: Cascade)
 
-	@@index([assetId])
-	@@index([status, severity])
+  @@index([assetId])
+  @@index([status, severity])
 }
 
 model MaintenanceTask {
-	id               String                @id @default(cuid())
-	taskCode         String                @unique @db.VarChar(50)
-	assetId          String
-	departmentId     String
-	sectionId        String
-	taskType         MaintenanceTaskType
-	description      String
-	severity         DefectSeverity
-	priorityScore    Float?
-	status           MaintenanceTaskStatus @default(PLANNED)
-	dueDate          DateTime              @db.Date
-	overdueDays      Int                   @default(0)
-	estimatedDuration Int
-	crewRequired     Int                   @default(1)
-	createdAt        DateTime              @default(now())
-	updatedAt        DateTime              @updatedAt
-	asset            Asset                 @relation(fields: [assetId], references: [id], onDelete: Cascade)
-	department       Department            @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-	section          Section               @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-	scheduledTasks   ScheduledTask[]
+  id                       String                   @id @default(cuid())
+  taskCode                 String                   @unique @db.VarChar(50)
+  assetId                  String
+  departmentId             String
+  sectionId                String
+  taskType                 MaintenanceTaskType
+  description              String
+  severity                 DefectSeverity
+  priorityScore            Float?
+  status                   MaintenanceTaskStatus    @default(PLANNED)
+  dueDate                  DateTime                 @db.Date
+  overdueDays              Int                      @default(0)
+  estimatedDuration        Int
+  crewRequired             Int                      @default(1)
+  createdAt                DateTime                 @default(now())
+  updatedAt                DateTime                 @updatedAt
+  asset                    Asset                    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  department               Department               @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  section                  Section                  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  scheduledTasks           ScheduledTask[]
+  failureRisks             FailureRisk[]
+  spareAvailabilities      SpareAvailability[]
+  technicianAvailabilities TechnicianAvailability[]
 
-	@@index([assetId])
-	@@index([departmentId])
-	@@index([sectionId])
-	@@index([status, dueDate])
-	@@index([priorityScore])
+  @@index([assetId])
+  @@index([departmentId])
+  @@index([sectionId])
+  @@index([status, dueDate])
+  @@index([priorityScore])
+}
+
+model FailureRisk {
+  id                    String          @id @default(cuid())
+  failureRiskCode       String          @unique @db.VarChar(50)
+  assetId               String
+  maintenanceTaskId     String
+  riskScore             Int
+  riskLevel             DefectSeverity
+  failureProbability    Float
+  impactScore           Int
+  daysToExpectedFailure Int
+  riskFactors           Json
+  calculatedAt          DateTime
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  asset                 Asset           @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  maintenanceTask       MaintenanceTask @relation(fields: [maintenanceTaskId], references: [id], onDelete: Cascade)
+
+  @@index([assetId])
+  @@index([maintenanceTaskId])
+  @@index([riskLevel, riskScore])
+}
+
+model SpareAvailability {
+  id                    String          @id @default(cuid())
+  spareAvailabilityCode String          @unique @db.VarChar(50)
+  maintenanceTaskId     String
+  assetId               String
+  sparePartCode         String          @db.VarChar(50)
+  sparePartName         String          @db.VarChar(120)
+  requiredQuantity      Int
+  availableQuantity     Int
+  availabilityStatus    String          @db.VarChar(20)
+  availabilityScore     Int
+  warehouse             String          @db.VarChar(50)
+  lastUpdated           DateTime
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  maintenanceTask       MaintenanceTask @relation(fields: [maintenanceTaskId], references: [id], onDelete: Cascade)
+  asset                 Asset           @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@index([maintenanceTaskId])
+  @@index([assetId])
+  @@index([availabilityStatus])
+}
+
+model TechnicianAvailability {
+  id                         String          @id @default(cuid())
+  technicianAvailabilityCode String          @unique @db.VarChar(50)
+  technicianId               String          @db.VarChar(50)
+  maintenanceTaskId          String
+  departmentCode             String          @db.VarChar(20)
+  sectionCode                String          @db.VarChar(30)
+  skill                      String          @db.VarChar(80)
+  requiredTechnicians        Int
+  availableTechnicians       Int
+  availabilityStatus         String          @db.VarChar(20)
+  availabilityScore          Int
+  availableFrom              DateTime
+  availableUntil             DateTime
+  createdAt                  DateTime        @default(now())
+  updatedAt                  DateTime        @updatedAt
+  maintenanceTask            MaintenanceTask @relation(fields: [maintenanceTaskId], references: [id], onDelete: Cascade)
+
+  @@index([maintenanceTaskId])
+  @@index([availabilityStatus])
+  @@index([departmentCode, sectionCode])
 }
 
 model Train {
-	id           String          @id @default(cuid())
-	trainNumber  String          @unique @db.VarChar(30)
-	name         String          @db.VarChar(100)
-	trainType    String?         @db.VarChar(50)
-	active       Boolean         @default(true)
-	createdAt    DateTime        @default(now())
-	updatedAt    DateTime        @updatedAt
-	schedules    TrainSchedule[]
+  id          String          @id @default(cuid())
+  trainNumber String          @unique @db.VarChar(30)
+  name        String          @db.VarChar(100)
+  trainType   String?         @db.VarChar(50)
+  active      Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  schedules   TrainSchedule[]
 }
 
 model TrainSchedule {
-	id             String              @id @default(cuid())
-	trainId        String
-	sectionId      String
-	date           DateTime            @db.Date
-	arrivalTime    DateTime            @db.Time(0)
-	departureTime  DateTime            @db.Time(0)
-	status         TrainScheduleStatus @default(SCHEDULED)
-	createdAt      DateTime            @default(now())
-	updatedAt      DateTime            @updatedAt
-	train          Train               @relation(fields: [trainId], references: [id], onDelete: Cascade)
-	section        Section             @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  id            String              @id @default(cuid())
+  trainId       String
+  sectionId     String
+  date          DateTime            @db.Date
+  arrivalTime   DateTime            @db.Time(0)
+  departureTime DateTime            @db.Time(0)
+  status        TrainScheduleStatus @default(SCHEDULED)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  train         Train               @relation(fields: [trainId], references: [id], onDelete: Cascade)
+  section       Section             @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
-	@@index([trainId])
-	@@index([sectionId, date])
-	@@index([date, status])
+  @@index([trainId])
+  @@index([sectionId, date])
+  @@index([date, status])
 }
 
 model BlockWindow {
-	id          String            @id @default(cuid())
-	sectionId   String
-	date        DateTime          @db.Date
-	startTime   DateTime          @db.Time(0)
-	endTime     DateTime          @db.Time(0)
-	maxDuration Int
-	status      BlockWindowStatus @default(AVAILABLE)
-	createdAt   DateTime          @default(now())
-	updatedAt   DateTime          @updatedAt
-	section     Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  id          String            @id @default(cuid())
+  sectionId   String
+  date        DateTime          @db.Date
+  startTime   DateTime          @db.Time(0)
+  endTime     DateTime          @db.Time(0)
+  maxDuration Int
+  status      BlockWindowStatus @default(AVAILABLE)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  section     Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
-	@@index([sectionId, date])
-	@@index([date, status])
+  @@index([sectionId, date])
+  @@index([date, status])
 }
 
 model BlockPlan {
-	id               String            @id @default(cuid())
-	sectionId        String
-	date             DateTime          @db.Date
-	startTime        DateTime          @db.Time(0)
-	endTime          DateTime          @db.Time(0)
-	status           BlockPlanStatus   @default(DRAFT)
-	utilization      Float?
-	priority         Int               @default(0)
-	optimizationScore Float?
-	createdAt        DateTime          @default(now())
-	updatedAt        DateTime          @updatedAt
-	section          Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-	scheduledTasks   ScheduledTask[]
+  id                String          @id @default(cuid())
+  sectionId         String
+  date              DateTime        @db.Date
+  startTime         DateTime        @db.Time(0)
+  endTime           DateTime        @db.Time(0)
+  status            BlockPlanStatus @default(DRAFT)
+  utilization       Float?
+  priority          Int             @default(0)
+  optimizationScore Float?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  section           Section         @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  scheduledTasks    ScheduledTask[]
 
-	@@index([sectionId, date])
-	@@index([date, status])
-	@@index([priority])
+  @@index([sectionId, date])
+  @@index([date, status])
+  @@index([priority])
 }
 
 model ScheduledTask {
-	id                String              @id @default(cuid())
-	maintenanceTaskId String
-	blockPlanId       String
-	startTime         DateTime
-	endTime           DateTime
-	status            ScheduledTaskStatus @default(SCHEDULED)
-	createdAt         DateTime            @default(now())
-	updatedAt         DateTime            @updatedAt
-	maintenanceTask   MaintenanceTask     @relation(fields: [maintenanceTaskId], references: [id], onDelete: Cascade)
-	blockPlan         BlockPlan           @relation(fields: [blockPlanId], references: [id], onDelete: Cascade)
+  id                String              @id @default(cuid())
+  maintenanceTaskId String
+  blockPlanId       String
+  startTime         DateTime
+  endTime           DateTime
+  status            ScheduledTaskStatus @default(SCHEDULED)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  maintenanceTask   MaintenanceTask     @relation(fields: [maintenanceTaskId], references: [id], onDelete: Cascade)
+  blockPlan         BlockPlan           @relation(fields: [blockPlanId], references: [id], onDelete: Cascade)
 
-	@@unique([maintenanceTaskId, blockPlanId])
-	@@index([maintenanceTaskId])
-	@@index([blockPlanId])
-	@@index([startTime, endTime])
+  @@unique([maintenanceTaskId, blockPlanId])
+  @@index([maintenanceTaskId])
+  @@index([blockPlanId])
+  @@index([startTime, endTime])
 }

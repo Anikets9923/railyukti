@@ -20,6 +20,9 @@ const sourceFiles = {
   maintenance: "maintenance.json",
   trains: "trains.json",
   blocks: "blocks.json",
+  failureRisk: "failure_risk.json",
+  spares: "spares_available.json",
+  technicians: "technician_available.json",
   planning: "planning.json",
   analytics: "analytics.json",
   readme: "README.json",
@@ -42,6 +45,9 @@ function createReport(records) {
     trains: bucket(records.trains.length),
     schedules: bucket(records.trains.length),
     blocks: bucket(records.blocks.length),
+    failureRisk: bucket(records.failureRisk.length),
+    spares: bucket(records.spares.length),
+    technicians: bucket(records.technicians.length),
     generatedDefaults: new Map(),
     generatedDemoData: new Map(),
     skippedReasons: new Map(),
@@ -123,12 +129,14 @@ async function loadIndexes() {
   const sections = await prisma.section.findMany({ select: { id: true, code: true } });
   const assets = await prisma.asset.findMany({ select: { id: true, assetCode: true } });
   const trains = await prisma.train.findMany({ select: { id: true, trainNumber: true } });
+  const maintenance = await prisma.maintenanceTask.findMany({ select: { id: true, taskCode: true } });
 
   return {
     departments: new Map(departments.map((item) => [item.code, item])),
     sections: new Map(sections.map((item) => [item.code, item])),
     assets: new Map(assets.map((item) => [item.assetCode, item])),
     trains: new Map(trains.map((item) => [item.trainNumber, item])),
+    maintenance: new Map(maintenance.map((item) => [item.taskCode, item])),
   };
 }
 
@@ -361,6 +369,151 @@ async function importSchedules(records, blocks, report, indexes) {
   }
 }
 
+async function importFailureRisks(records, report, indexes) {
+  for (const [index, record] of records.entries()) {
+    const asset = indexes.assets.get(record.asset_id);
+    const maintenance = indexes.maintenance.get(record.maintenance_id);
+    const valid = asset && maintenance && record.risk_score >= 0 && record.risk_score <= 100 &&
+      record.failure_probability >= 0 && record.failure_probability <= 1 &&
+      record.impact_score >= 1 && record.impact_score <= 5 && record.days_to_expected_failure >= 0;
+    if (!valid) {
+      recordSkip(report, "failureRisk", "Invalid source reference or risk value.", sourceFiles.failureRisk, index, "failure_risk_id", record.failure_risk_id);
+      continue;
+    }
+    try {
+      const existing = await prisma.failureRisk.findUnique({ where: { failureRiskCode: record.failure_risk_id }, select: { id: true } });
+      await prisma.failureRisk.upsert({
+        where: { failureRiskCode: record.failure_risk_id },
+        create: {
+          failureRiskCode: record.failure_risk_id,
+          assetId: asset.id,
+          maintenanceTaskId: maintenance.id,
+          riskScore: record.risk_score,
+          riskLevel: record.risk_level,
+          failureProbability: record.failure_probability,
+          impactScore: record.impact_score,
+          daysToExpectedFailure: record.days_to_expected_failure,
+          riskFactors: record.risk_factors,
+          calculatedAt: new Date(record.calculated_at),
+        },
+        update: {
+          assetId: asset.id,
+          maintenanceTaskId: maintenance.id,
+          riskScore: record.risk_score,
+          riskLevel: record.risk_level,
+          failureProbability: record.failure_probability,
+          impactScore: record.impact_score,
+          daysToExpectedFailure: record.days_to_expected_failure,
+          riskFactors: record.risk_factors,
+          calculatedAt: new Date(record.calculated_at),
+        },
+      });
+      existing ? report.failureRisk.updated += 1 : report.failureRisk.imported += 1;
+    } catch (cause) {
+      recordFailure(report, "failureRisk", sourceFiles.failureRisk, index, "failure_risk_id", record.failure_risk_id, cause);
+    }
+  }
+}
+
+async function importSpares(records, report, indexes) {
+  for (const [index, record] of records.entries()) {
+    const asset = indexes.assets.get(record.asset_id);
+    const maintenance = indexes.maintenance.get(record.maintenance_id);
+    const validStatuses = ["AVAILABLE", "PARTIAL", "NOT_AVAILABLE"];
+    const valid = asset && maintenance && validStatuses.includes(record.availability_status) &&
+      record.required_quantity >= 0 && record.available_quantity >= 0 &&
+      record.availability_score >= 0 && record.availability_score <= 100;
+    if (!valid) {
+      recordSkip(report, "spares", "Invalid source reference or spare availability value.", sourceFiles.spares, index, "spare_availability_id", record.spare_availability_id);
+      continue;
+    }
+    try {
+      const existing = await prisma.spareAvailability.findUnique({ where: { spareAvailabilityCode: record.spare_availability_id }, select: { id: true } });
+      await prisma.spareAvailability.upsert({
+        where: { spareAvailabilityCode: record.spare_availability_id },
+        create: {
+          spareAvailabilityCode: record.spare_availability_id,
+          maintenanceTaskId: maintenance.id,
+          assetId: asset.id,
+          sparePartCode: record.spare_part_code,
+          sparePartName: record.spare_part_name,
+          requiredQuantity: record.required_quantity,
+          availableQuantity: record.available_quantity,
+          availabilityStatus: record.availability_status,
+          availabilityScore: record.availability_score,
+          warehouse: record.warehouse,
+          lastUpdated: new Date(record.last_updated),
+        },
+        update: {
+          maintenanceTaskId: maintenance.id,
+          assetId: asset.id,
+          sparePartCode: record.spare_part_code,
+          sparePartName: record.spare_part_name,
+          requiredQuantity: record.required_quantity,
+          availableQuantity: record.available_quantity,
+          availabilityStatus: record.availability_status,
+          availabilityScore: record.availability_score,
+          warehouse: record.warehouse,
+          lastUpdated: new Date(record.last_updated),
+        },
+      });
+      existing ? report.spares.updated += 1 : report.spares.imported += 1;
+    } catch (cause) {
+      recordFailure(report, "spares", sourceFiles.spares, index, "spare_availability_id", record.spare_availability_id, cause);
+    }
+  }
+}
+
+async function importTechnicians(records, report, indexes) {
+  for (const [index, record] of records.entries()) {
+    const maintenance = indexes.maintenance.get(record.maintenance_id);
+    const validStatuses = ["AVAILABLE", "PARTIAL", "UNAVAILABLE"];
+    const valid = maintenance && validStatuses.includes(record.availability_status) &&
+      record.required_technicians >= 0 && record.available_technicians >= 0 &&
+      record.availability_score >= 0 && record.availability_score <= 100;
+    if (!valid) {
+      recordSkip(report, "technicians", "Invalid maintenance reference or technician availability value.", sourceFiles.technicians, index, "technician_availability_id", record.technician_availability_id);
+      continue;
+    }
+    try {
+      const existing = await prisma.technicianAvailability.findUnique({ where: { technicianAvailabilityCode: record.technician_availability_id }, select: { id: true } });
+      await prisma.technicianAvailability.upsert({
+        where: { technicianAvailabilityCode: record.technician_availability_id },
+        create: {
+          technicianAvailabilityCode: record.technician_availability_id,
+          technicianId: record.technician_id,
+          maintenanceTaskId: maintenance.id,
+          departmentCode: record.department_code,
+          sectionCode: record.section_code,
+          skill: record.skill,
+          requiredTechnicians: record.required_technicians,
+          availableTechnicians: record.available_technicians,
+          availabilityStatus: record.availability_status,
+          availabilityScore: record.availability_score,
+          availableFrom: new Date(record.available_from),
+          availableUntil: new Date(record.available_until),
+        },
+        update: {
+          technicianId: record.technician_id,
+          maintenanceTaskId: maintenance.id,
+          departmentCode: record.department_code,
+          sectionCode: record.section_code,
+          skill: record.skill,
+          requiredTechnicians: record.required_technicians,
+          availableTechnicians: record.available_technicians,
+          availabilityStatus: record.availability_status,
+          availabilityScore: record.availability_score,
+          availableFrom: new Date(record.available_from),
+          availableUntil: new Date(record.available_until),
+        },
+      });
+      existing ? report.technicians.updated += 1 : report.technicians.imported += 1;
+    } catch (cause) {
+      recordFailure(report, "technicians", sourceFiles.technicians, index, "technician_availability_id", record.technician_availability_id, cause);
+    }
+  }
+}
+
 function printMap(title, map) {
   console.log(title);
   if (!map.size) console.log("- none");
@@ -369,7 +522,7 @@ function printMap(title, map) {
 
 function printSummary(report) {
   console.log("\nDATASET IMPORT SUMMARY\n");
-  for (const [label, key] of [["Assets", "assets"], ["Defects", "defects"], ["Maintenance", "maintenance"], ["Trains", "trains"], ["Schedules", "schedules"], ["Block Windows", "blocks"]]) {
+  for (const [label, key] of [["Assets", "assets"], ["Defects", "defects"], ["Maintenance", "maintenance"], ["Trains", "trains"], ["Schedules", "schedules"], ["Block Windows", "blocks"], ["Failure Risk", "failureRisk"], ["Spare Availability", "spares"], ["Technician Availability", "technicians"]]) {
     const result = report[key];
     console.log(`${label}:`);
     console.log(`Source: ${result.source}`);
@@ -393,11 +546,14 @@ async function main() {
   const maintenance = await readJson(sourceFiles.maintenance);
   const trains = await readJson(sourceFiles.trains);
   const blocks = await readJson(sourceFiles.blocks);
+  const failureRisk = await readJson(sourceFiles.failureRisk);
+  const spares = await readJson(sourceFiles.spares);
+  const technicians = await readJson(sourceFiles.technicians);
   const planning = await readJson(sourceFiles.planning);
   await readJson(sourceFiles.analytics);
   await readJson(sourceFiles.readme);
 
-  const report = createReport({ assets, defects, maintenance, trains, blocks });
+  const report = createReport({ assets, defects, maintenance, trains, blocks, failureRisk, spares, technicians });
   const indexes = await loadIndexes();
   await importAssets(assets, maintenance, report, indexes);
   await importDefects(defects, report, indexes);
@@ -405,6 +561,10 @@ async function main() {
   await importBlocks(blocks, report, indexes);
   await importTrains(trains, report, indexes);
   await importSchedules(trains, blocks, report, indexes);
+  const importedIndexes = await loadIndexes();
+  await importFailureRisks(failureRisk, report, importedIndexes);
+  await importSpares(spares, report, importedIndexes);
+  await importTechnicians(technicians, report, importedIndexes);
   printSummary(report);
 }
 

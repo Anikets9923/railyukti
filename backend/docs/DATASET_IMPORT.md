@@ -19,6 +19,11 @@ The source counts are:
 - Blocks: 30
 - Planning reference records: 60
 - Analytics snapshot: 1
+- `failure_risk.json`: 90
+- `spares_available.json`: 90
+- `technician_available.json`: 90
+
+These three files are synthetic mock inputs. Failure Risk means “How urgently might this asset/task become a failure?”, Spare Availability means “Can the required material be obtained?”, and Technician Availability means “Do we have the required skilled workforce?”. They are not real railway operational data.
 
 ## Central mapping configuration
 
@@ -151,6 +156,14 @@ trainId + sectionId + date + arrivalTime + departureTime
 
 `analytics.json` is not imported into operational tables because it is a derived snapshot.
 
+### Resource inputs
+
+- `failure_risk_id` -> `FailureRisk.failureRiskCode`; asset and maintenance IDs resolve to existing records.
+- `spare_availability_id` -> `SpareAvailability.spareAvailabilityCode`; asset and maintenance IDs resolve to existing records.
+- `technician_availability_id` -> `TechnicianAvailability.technicianAvailabilityCode`; maintenance ID resolves to an existing task.
+
+Resource records are generated deterministically one per maintenance task from existing IDs. Availability cycles through available, partial, and unavailable states so the prototype can demonstrate feasibility constraints. No random or current-time values are used.
+
 ## Reporting
 
 The importer prints source, imported, updated, skipped, and failed counts for assets, defects, maintenance tasks, trains, schedules, and block windows. It also prints:
@@ -184,4 +197,5 @@ Existing application records are preserved. Current prototype data may make fina
 - Generated train schedules are not source schedules or real operational data.
 - No train-to-asset relationship is created.
 - No Prisma schema changes are required.
+- Resource-input models are persisted with stable source identifiers and cascading relationships to assets and maintenance tasks.
 - Planning and analytics source files remain non-operational reference data.

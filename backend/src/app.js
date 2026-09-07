@@ -9,6 +9,7 @@ const trainRoutes = require("./routes/trainRoutes");
 const blockWindowRoutes = require("./routes/blockWindowRoutes");
 const planningRoutes = require("./routes/planningRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const { failureRiskRouter, sparesRouter, technicianRouter } = require("./routes/resourceInputRoutes");
 const notFoundHandler = require("./middleware/notFoundHandler");
 const errorHandler = require("./middleware/errorHandler");
 
@@ -24,6 +25,9 @@ app.use("/api/trains", trainRoutes);
 app.use("/api/blocks", blockWindowRoutes);
 app.use("/api/planning", planningRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/failure-risk", failureRiskRouter);
+app.use("/api/spares", sparesRouter);
+app.use("/api/technicians", technicianRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
