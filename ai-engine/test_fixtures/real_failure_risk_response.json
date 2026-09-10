@@ -1,0 +1,7 @@
+{"success":true,"data":{"items":[
+{"failureProbability":0.96,"riskLevel":"CRITICAL","riskFactors":["High asset criticality","Maintenance due"],"maintenanceTask":{"taskCode":"MNT-0078"}},
+{"failureProbability":0.87,"riskLevel":"HIGH","riskFactors":["Repeated defect","Maintenance overdue"],"maintenanceTask":{"taskCode":"MNT-0031"}},
+{"failureProbability":0.72,"riskLevel":"HIGH","riskFactors":["Maintenance overdue"],"maintenanceTask":{"taskCode":"MNT-0002"}},
+{"failureProbability":0.55,"riskLevel":"MEDIUM","riskFactors":["Maintenance due"],"maintenanceTask":{"taskCode":"MNT-0003"}},
+{"failureProbability":0.91,"riskLevel":"CRITICAL","riskFactors":["High asset criticality","Repeated defect"],"maintenanceTask":{"taskCode":"TASK-TRD-002"}}
+],"pagination":{"page":1,"totalPages":1}}}

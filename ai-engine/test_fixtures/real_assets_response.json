@@ -1,0 +1,11 @@
+{"success":true,"data":{"items":[
+{"assetCode":"AST-0001","assetType":"EMU Coach","criticality":"MEDIUM"},
+{"assetCode":"AST-0003","assetType":"Electric Locomotive","criticality":"LOW"},
+{"assetCode":"AST-0027","assetType":"EMU Coach","criticality":"MEDIUM"},
+{"assetCode":"AST-0036","assetType":"Diesel Locomotive","criticality":"HIGH"},
+{"assetCode":"AST-0049","assetType":"Electric Locomotive","criticality":"MEDIUM"},
+{"assetCode":"AST-0050","assetType":"Electric Locomotive","criticality":"MEDIUM"},
+{"assetCode":"AST-0054","assetType":"Diesel Locomotive","criticality":"HIGH"},
+{"assetCode":"AST-0057","assetType":"Passenger Coach","criticality":"HIGH"},
+{"assetCode":"TRD-FDR-002","assetType":"Traction feeder breaker","criticality":"CRITICAL"}
+],"pagination":{"page":1,"totalPages":1}}}

@@ -1,0 +1,7 @@
+{"success":true,"data":{"items":[
+{"requiredTechnicians":1,"availableTechnicians":2,"maintenanceTask":{"taskCode":"MNT-0001"}},
+{"requiredTechnicians":3,"availableTechnicians":0,"maintenanceTask":{"taskCode":"MNT-0015"}},
+{"requiredTechnicians":2,"availableTechnicians":1,"maintenanceTask":{"taskCode":"MNT-0029"}},
+{"requiredTechnicians":3,"availableTechnicians":0,"maintenanceTask":{"taskCode":"MNT-0078"}},
+{"requiredTechnicians":1,"availableTechnicians":1,"maintenanceTask":{"taskCode":"MNT-0002"}}
+],"pagination":{"page":1,"totalPages":1}}}

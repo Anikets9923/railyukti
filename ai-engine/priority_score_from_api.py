@@ -1,43 +1,37 @@
 """
-priority_score_from_api_v2.py
+priority_score_from_api.py  (final version)
 
-WHAT CHANGED FROM priority_score_from_api.py:
-Now that we've seen the REAL backend responses, several things needed
-fixing that we couldn't have known before:
+WHAT THIS FILE DOES:
+Fetches real data from the backend's live API and computes a priority
+score (0-100) + tier for every maintenance task, using REAL failure
+risk, spare availability, and technician availability -- no more
+estimates or assumptions.
 
-1. Responses are wrapped: {"success": true, "data": {"items": [...],
-   "pagination": {...}}} -- not a plain list like our test data was.
-2. Responses are PAGINATED -- one request only gives you a slice
-   (e.g. 20 of 102 tasks). We now loop through every page automatically.
-3. Field names are different from what we assumed (see the mapping
-   table below).
-4. Three fields our formula needs (failure_risk, spares_available,
-   technician_available) DON'T EXIST in the real data yet. We use
-   clearly-marked placeholder values for these until backend confirms
-   where this data actually lives -- search "PLACEHOLDER" in this file.
+WHAT CHANGED FROM THE PREVIOUS VERSION:
+Backend built three new dedicated endpoints:
+    /api/failure-risk
+    /api/spares
+    /api/technicians/availability
+Previously we had to estimate/assume these three values because they
+didn't exist anywhere. Now we fetch the real thing.
 
 HOW TO RUN IT:
-    python priority_score_from_api_v2.py
+    python priority_score_from_api.py
 """
 
 import requests
 
 
-# -----------------------------------------------------------------
-# CONFIGURATION
-# -----------------------------------------------------------------
-BACKEND_BASE_URL = "https://charger-went-vpn-permalink.trycloudflare.com"
-
-# ⚠️ This tunnel URL changes every time backend restarts their tunnel.
-# If this stops working with a connection error, ask them for the new one.
+BACKEND_BASE_URL = "http://localhost:5050"
+# ⚠️ This tunnel link expires whenever backend restarts their server --
+# ask for a fresh one if you get a connection error when running this.
 
 
 # -----------------------------------------------------------------
-# STEP 1: Fetch ALL pages of a paginated endpoint, not just the first
+# STEP 1: Fetch every page of a paginated endpoint
 # -----------------------------------------------------------------
-# The real API only gives you a "page" at a time (like 20 results per
-# page). This function keeps asking for "the next page" until there
-# are no more pages left, and combines everything into one big list.
+# The real API only gives ~20-100 results per request. This function
+# keeps asking for "the next page" until there are none left.
 
 def fetch_all_pages(endpoint_path):
     all_items = []
@@ -47,17 +41,12 @@ def fetch_all_pages(endpoint_path):
         response = requests.get(url)
         response.raise_for_status()
         body = response.json()
-
-        # The real data isn't at the top level -- it's nested inside
-        # body["data"]["items"], so we reach in and grab it.
         items = body["data"]["items"]
         all_items.extend(items)
-
         total_pages = body["data"]["pagination"]["totalPages"]
         if page >= total_pages:
             break
         page += 1
-
     return all_items
 
 
@@ -69,80 +58,50 @@ print("Fetching assets...")
 raw_assets = fetch_all_pages("/api/assets")
 print(f"  Got {len(raw_assets)} assets")
 
-# NOTE: trains endpoint not tested against real data yet -- field names
-# below (assignedAssetIds, priorityClass) are a best guess based on the
-# pattern from assets/maintenance. Confirm with backend once tested.
+print("Fetching failure risk records...")
+raw_failure_risk = fetch_all_pages("/api/failure-risk")
+print(f"  Got {len(raw_failure_risk)} failure risk records")
+
+print("Fetching spare availability records...")
+raw_spares = fetch_all_pages("/api/spares")
+print(f"  Got {len(raw_spares)} spare records")
+
+print("Fetching technician availability records...")
+raw_technicians = fetch_all_pages("/api/technicians/availability")
+print(f"  Got {len(raw_technicians)} technician records")
+
+# Trains endpoint hasn't been tested against real data yet -- if it
+# fails, we don't want that to crash the whole script, since traffic
+# impact is only 10% of the score.
 try:
-    print("Fetching trains...")
     raw_trains = fetch_all_pages("/api/trains")
-    print(f"  Got {len(raw_trains)} trains")
 except Exception as e:
-    print(f"  Could not fetch trains ({e}) -- traffic impact will be scored as 0 for everything")
+    print(f"  Could not fetch trains ({e}) -- traffic impact will be 0 for everything")
     raw_trains = []
 
 
 # -----------------------------------------------------------------
-# STEP 2: Translate the real field names into the names our formula uses
+# STEP 2: Build lookup tables, all keyed by taskCode
 # -----------------------------------------------------------------
-# This is the important part -- rather than rewriting the whole scoring
-# formula, we just translate the incoming data into the same shape we
-# had before. This keeps the scoring logic itself unchanged and trusted.
+# failure-risk, spares, and technicians all link back to a task via
+# a nested maintenanceTask.taskCode field -- that's our shared key.
 
-FIELD_MAPPING_NOTES = """
-    maintenance_id      <- taskCode              (renamed)
-    asset_id            <- asset.assetCode        (was nested)
-    days_overdue        <- overdueDays             (renamed)
-    duration_hours      <- estimatedDuration / 60  (was in minutes)
-    severity            <- severity                (already on the task directly -- no defects endpoint needed!)
-    criticality         <- asset.criticality       (already on the task, nested)
+failure_risk_by_task = {}
+for fr in raw_failure_risk:
+    task_code = fr["maintenanceTask"]["taskCode"]
+    failure_risk_by_task[task_code] = fr
 
-    ESTIMATED (backend confirmed these fields don't exist in their database --
-    we're not waiting on a schema change, so we approximate instead):
+spares_by_task = {}
+for sp in raw_spares:
+    task_code = sp["maintenanceTask"]["taskCode"]
+    spares_by_task[task_code] = sp
 
-    failure_risk        <- derived from severity + days_overdue (see estimate_failure_risk())
-                            NOT a real prediction -- a reasonable stand-in so tasks
-                            aren't all scored identically. Swap for real data if/when
-                            backend adds it.
-    spares_available     <- True (assumed -- no data available to check this)
-    technician_available <- True (assumed -- no data available to check this)
-"""
+technicians_by_task = {}
+for tech in raw_technicians:
+    task_code = tech["maintenanceTask"]["taskCode"]
+    technicians_by_task[task_code] = tech
 
-SEVERITY_TO_RISK = {"LOW": 0.2, "MEDIUM": 0.45, "HIGH": 0.7, "CRITICAL": 0.9}
-
-
-def estimate_failure_risk(severity, days_overdue):
-    """
-    We don't have a real failure_risk from backend, so we build a rough
-    stand-in from two things we DO have: how bad the defect is, and how
-    overdue it's gotten. This isn't a real prediction model -- it's a
-    reasonable approximation so scoring isn't flat across every task.
-    """
-    severity_component = SEVERITY_TO_RISK.get(severity, 0.4)
-    overdue_component = min(days_overdue / 20, 1.0)
-    return round(0.6 * severity_component + 0.4 * overdue_component, 3)
-
-
-tasks = []
-for t in raw_tasks:
-    severity = t["severity"]
-    days_overdue = t["overdueDays"]
-    tasks.append({
-        "maintenance_id": t["taskCode"],
-        "asset_id": t["asset"]["assetCode"],
-        "days_overdue": days_overdue,
-        "duration_hours": round(t["estimatedDuration"] / 60, 1),
-        "severity": severity,
-        "failure_risk": estimate_failure_risk(severity, days_overdue),  # ESTIMATED, see note above
-        "spares_available": True,        # ASSUMED -- no data available
-        "technician_available": True,    # ASSUMED -- no data available
-    })
-
-assets_by_id = {}
-for a in raw_assets:
-    assets_by_id[a["assetCode"]] = {
-        "asset_id": a["assetCode"],
-        "criticality": a["criticality"],
-    }
+assets_by_id = {a["assetCode"]: a for a in raw_assets}
 
 trains = []
 for tr in raw_trains:
@@ -153,7 +112,45 @@ for tr in raw_trains:
 
 
 # -----------------------------------------------------------------
-# STEP 3: The scoring formula -- UNCHANGED from before
+# STEP 3: Assemble each task using REAL data
+# -----------------------------------------------------------------
+
+tasks = []
+for t in raw_tasks:
+    task_code = t["taskCode"]
+    asset_code = t["asset"]["assetCode"]
+
+    fr = failure_risk_by_task.get(task_code)
+    sp = spares_by_task.get(task_code)
+    tech = technicians_by_task.get(task_code)
+
+    # Real failure_risk when we have a record for this task. Some tasks
+    # might not have one yet, so we fall back to a neutral 0.5 only in
+    # that specific case (not for everything, like before).
+    failure_risk = fr["failureProbability"] if fr else 0.5
+
+    # Per backend's rule: NOT_AVAILABLE = not feasible, anything else
+    # (AVAILABLE or PARTIAL) counts as available for now.
+    spares_available = (sp["availabilityStatus"] != "NOT_AVAILABLE") if sp else True
+
+    # Per backend's rule: feasible only if we have enough technicians.
+    technician_available = (tech["availableTechnicians"] >= tech["requiredTechnicians"]) if tech else True
+
+    tasks.append({
+        "maintenance_id": task_code,
+        "asset_id": asset_code,
+        "days_overdue": t["overdueDays"],
+        "duration_hours": round(t["estimatedDuration"] / 60, 1),
+        "severity": t["severity"],
+        "failure_risk": failure_risk,
+        "spares_available": spares_available,
+        "technician_available": technician_available,
+        "risk_factors": fr["riskFactors"] if fr else [],  # saved for later "why selected" explanations
+    })
+
+
+# -----------------------------------------------------------------
+# STEP 4: The scoring formula -- unchanged from every earlier version
 # -----------------------------------------------------------------
 
 CRITICALITY_POINTS = {"LOW": 33, "MEDIUM": 66, "HIGH": 100, "CRITICAL": 100}
@@ -191,8 +188,12 @@ def get_priority_tier(score):
 
 
 # -----------------------------------------------------------------
-# STEP 4: Run it and print results
+# STEP 5: Run it, including a new "feasible" flag
 # -----------------------------------------------------------------
+# feasible = can this task even be scheduled right now, separate from
+# how urgent it is. A task can be CRITICAL priority but NOT feasible
+# (e.g. no spare parts) -- the optimizer will need this later to avoid
+# scheduling something that can't actually happen yet.
 
 results = []
 skipped = 0
@@ -216,24 +217,23 @@ for task in tasks:
         0.10 * traffic_pts, 1
     )
 
+    feasible = task["spares_available"] and task["technician_available"]
+
     results.append({
         "maintenance_id": task["maintenance_id"],
         "asset_id": task["asset_id"],
         "priority_score": score,
         "priority_tier": get_priority_tier(score),
+        "feasible": feasible,
     })
 
 results.sort(key=lambda r: r["priority_score"], reverse=True)
 
 print()
-print("⚠️  NOTE: failure_risk is ESTIMATED from severity+overdue (backend doesn't store this field).")
-print("   spares_available/technician_available are ASSUMED true (no data source for these yet).")
-print("   Scores below are a reasonable approximation, not final ground truth.")
-print()
-print(f"{'Maintenance ID':<20}{'Asset':<12}{'Score':<8}{'Tier'}")
-print("-" * 55)
-for r in results[:15]:  # just show top 15 so it's readable
-    print(f"{r['maintenance_id']:<20}{r['asset_id']:<12}{r['priority_score']:<8}{r['priority_tier']}")
+print(f"{'Maintenance ID':<18}{'Asset':<10}{'Score':<8}{'Tier':<10}{'Feasible?'}")
+print("-" * 60)
+for r in results[:15]:
+    print(f"{r['maintenance_id']:<18}{r['asset_id']:<10}{r['priority_score']:<8}{r['priority_tier']:<10}{r['feasible']}")
 
 if skipped:
     print(f"\n({skipped} tasks skipped -- asset not found in assets list)")

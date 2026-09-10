@@ -1,0 +1,11 @@
+[
+  {"maintenance_id": "MNT-0078", "section": "SEC-A1", "duration_hours": 4.0, "priority_score": 77.1, "feasible": false},
+  {"maintenance_id": "TASK-TRD-002", "section": "SEC-B1", "duration_hours": 2.0, "priority_score": 71.6, "feasible": true},
+  {"maintenance_id": "MNT-0001", "section": "SEC-D1", "duration_hours": 24.0, "priority_score": 67.5, "feasible": true},
+  {"maintenance_id": "MNT-0031", "section": "SEC-C1", "duration_hours": 6.0, "priority_score": 56.0, "feasible": true},
+  {"maintenance_id": "MNT-0029", "section": "SEC-C1", "duration_hours": 8.0, "priority_score": 47.5, "feasible": false},
+  {"maintenance_id": "MNT-0003", "section": "SEC-A1", "duration_hours": 16.0, "priority_score": 44.0, "feasible": false},
+  {"maintenance_id": "MNT-0002", "section": "SEC-A1", "duration_hours": 6.0, "priority_score": 39.5, "feasible": true},
+  {"maintenance_id": "MNT-0004", "section": "SEC-A1", "duration_hours": 4.0, "priority_score": 37.3, "feasible": true},
+  {"maintenance_id": "MNT-0015", "section": "SEC-A1", "duration_hours": 12.0, "priority_score": 33.6, "feasible": false}
+]

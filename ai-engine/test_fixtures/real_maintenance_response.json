@@ -1,0 +1,11 @@
+{"success":true,"data":{"items":[
+{"taskCode":"MNT-0001","overdueDays":6,"estimatedDuration":1440,"severity":"CRITICAL","asset":{"assetCode":"AST-0057","criticality":"HIGH"}},
+{"taskCode":"MNT-0002","overdueDays":0,"estimatedDuration":360,"severity":"MEDIUM","asset":{"assetCode":"AST-0001","criticality":"MEDIUM"}},
+{"taskCode":"MNT-0003","overdueDays":0,"estimatedDuration":960,"severity":"HIGH","asset":{"assetCode":"AST-0049","criticality":"MEDIUM"}},
+{"taskCode":"MNT-0004","overdueDays":0,"estimatedDuration":240,"severity":"MEDIUM","asset":{"assetCode":"AST-0027","criticality":"MEDIUM"}},
+{"taskCode":"MNT-0015","overdueDays":0,"estimatedDuration":720,"severity":"HIGH","asset":{"assetCode":"AST-0003","criticality":"LOW"}},
+{"taskCode":"MNT-0029","overdueDays":0,"estimatedDuration":480,"severity":"MEDIUM","asset":{"assetCode":"AST-0054","criticality":"HIGH"}},
+{"taskCode":"MNT-0031","overdueDays":7,"estimatedDuration":360,"severity":"HIGH","asset":{"assetCode":"AST-0050","criticality":"MEDIUM"}},
+{"taskCode":"MNT-0078","overdueDays":20,"estimatedDuration":240,"severity":"MEDIUM","asset":{"assetCode":"AST-0036","criticality":"HIGH"}},
+{"taskCode":"TASK-TRD-002","overdueDays":6,"estimatedDuration":120,"severity":"CRITICAL","asset":{"assetCode":"TRD-FDR-002","criticality":"CRITICAL"}}
+],"pagination":{"page":1,"totalPages":1}}}

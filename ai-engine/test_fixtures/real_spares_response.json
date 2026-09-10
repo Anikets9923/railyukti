@@ -1,0 +1,7 @@
+{"success":true,"data":{"items":[
+{"availabilityStatus":"PARTIAL","maintenanceTask":{"taskCode":"MNT-0002"}},
+{"availabilityStatus":"NOT_AVAILABLE","maintenanceTask":{"taskCode":"MNT-0003"}},
+{"availabilityStatus":"AVAILABLE","maintenanceTask":{"taskCode":"MNT-0004"}},
+{"availabilityStatus":"AVAILABLE","maintenanceTask":{"taskCode":"MNT-0001"}},
+{"availabilityStatus":"NOT_AVAILABLE","maintenanceTask":{"taskCode":"MNT-0078"}}
+],"pagination":{"page":1,"totalPages":1}}}

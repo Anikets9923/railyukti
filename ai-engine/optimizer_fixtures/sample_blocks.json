@@ -1,0 +1,8 @@
+[
+  {"block_id": "BLK-0001", "section": "SEC-A1", "duration_hours": 6, "approval_status": "APPROVED"},
+  {"block_id": "BLK-0002", "section": "SEC-A1", "duration_hours": 12, "approval_status": "APPROVED"},
+  {"block_id": "BLK-0003", "section": "SEC-B1", "duration_hours": 8, "approval_status": "APPROVED"},
+  {"block_id": "BLK-0004", "section": "SEC-C1", "duration_hours": 6, "approval_status": "APPROVED"},
+  {"block_id": "BLK-0005", "section": "SEC-D1", "duration_hours": 24, "approval_status": "APPROVED"},
+  {"block_id": "BLK-0006", "section": "SEC-A1", "duration_hours": 4, "approval_status": "PENDING"}
+]
