@@ -19,10 +19,10 @@ HOW TO RUN IT:
     python priority_score_from_api.py
 """
 
+import os
 import requests
 
-
-BACKEND_BASE_URL = "http://localhost:5050"
+BACKEND_BASE_URL = os.environ.get("BACKEND_URL", "http://localhost:5050")
 # ⚠️ This tunnel link expires whenever backend restarts their server --
 # ask for a fresh one if you get a connection error when running this.
 
