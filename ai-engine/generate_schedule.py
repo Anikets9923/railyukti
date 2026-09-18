@@ -130,6 +130,7 @@ for t in raw_tasks:
         "failure_risk": failure_risk,
         "spares_available": spares_available,
         "technician_available": technician_available,
+        "risk_factors": fr["riskFactors"] if fr else [],   # real reasons from backend, used for explanations
     })
 
 
@@ -212,6 +213,9 @@ for task in tasks:
         "priority_score": score,
         "priority_tier": get_priority_tier(score),
         "feasible": task["spares_available"] and task["technician_available"],
+        "spares_available": task["spares_available"],
+        "technician_available": task["technician_available"],
+        "risk_factors": task["risk_factors"],
     })
 
 print(f"\nScored {len(scored_tasks)} tasks.")
@@ -256,6 +260,46 @@ solver = cp_model.CpSolver()
 solver.parameters.max_time_in_seconds = 15.0
 status = solver.Solve(model)
 
+
+# -----------------------------------------------------------------
+# STEP 7: Explainability -- "Why was this block selected?"
+# -----------------------------------------------------------------
+# Builds a short list of plain-English reasons for a block's schedule,
+# combining real data (risk factors from the backend, resource
+# availability, block utilization) -- matching the "Why selected?"
+# format from the project README.
+
+def explain_block(assigned_tasks, block, utilization):
+    reasons = []
+    reasons.append(f"{len(assigned_tasks)} compatible maintenance activities")
+
+    high_priority = [t for t in assigned_tasks if t["priority_tier"] in ("CRITICAL", "HIGH")]
+    if high_priority:
+        reasons.append(f"{len(high_priority)} high-priority task(s) included")
+
+    # Pull real, specific reasons from the backend's own risk factors,
+    # rather than a generic statement -- more convincing and more honest.
+    all_factors = set()
+    for t in assigned_tasks:
+        all_factors.update(t["risk_factors"])
+    if all_factors:
+        reasons.append("Risk factors: " + ", ".join(sorted(all_factors)))
+
+    if all(t["spares_available"] for t in assigned_tasks):
+        reasons.append("Required spares available for all tasks")
+    if all(t["technician_available"] for t in assigned_tasks):
+        reasons.append("Required technicians available for all tasks")
+
+    if utilization >= 90:
+        reasons.append(f"High block utilization ({utilization}%)")
+    elif utilization >= 60:
+        reasons.append(f"Good block utilization ({utilization}%)")
+    else:
+        reasons.append(f"Utilization: {utilization}% -- room for more tasks if available")
+
+    return reasons
+
+
 if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
     print("No valid schedule could be found.")
 else:
@@ -270,6 +314,10 @@ else:
             for t in assigned:
                 print(f"   - {t['maintenance_id']} ({t['duration_hours']}h, priority {t['priority_score']}, {t['priority_tier']})")
                 scheduled_ids.add(t["maintenance_id"])
+
+            print("   Why selected?")
+            for reason in explain_block(assigned, block, util):
+                print(f"     ✓ {reason}")
 
     unscheduled = [t for t in feasible_tasks if t["maintenance_id"] not in scheduled_ids]
     print(f"\n=== FEASIBLE BUT NOT SCHEDULED ({len(unscheduled)}) ===")
