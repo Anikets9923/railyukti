@@ -1,0 +1,1 @@
+export function Timeline({ items = [] }) { return <ol className="timeline">{items.map((item, index) => <li className="timeline-item" key={item.id ?? index}><span className={`timeline-marker ${item.tone ?? ''}`} /><div><div className="timeline-meta"><strong>{item.title}</strong><time>{item.time}</time></div>{item.description && <p>{item.description}</p>}</div></li>)}</ol> }

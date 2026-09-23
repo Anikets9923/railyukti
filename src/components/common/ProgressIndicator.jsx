@@ -1,0 +1,1 @@
+export function ProgressIndicator({ value, label, detail }) { const safeValue = Math.min(100, Math.max(0, value)); return <div className="progress-indicator"><div className="progress-header"><span>{label}</span><strong>{safeValue}%</strong></div><div className="progress-track"><i style={{ width: `${safeValue}%` }} /></div>{detail && <small>{detail}</small>}</div> }

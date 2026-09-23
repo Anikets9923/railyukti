@@ -1,0 +1,12 @@
+import { useState } from 'react'
+import { AlertPanel } from '../../components/common/AlertPanel'
+import { DataTable } from '../../components/common/DataTable'
+import { DepartmentBadge } from '../../components/common/DepartmentBadge'
+import { DetailDrawer } from '../../components/common/DetailDrawer'
+import { PageHeader } from '../../components/common/PageHeader'
+import { PriorityBadge } from '../../components/common/PriorityBadge'
+import { StatusBadge } from '../../components/common/StatusBadge'
+import { useDepartmentWorkspace } from '../../hooks/useDepartmentWorkspace'
+
+export function DepartmentAssetsPage() { const { assets, department, isMock, error, refresh } = useDepartmentWorkspace(); const [selected, setSelected] = useState(null); const columns = [{ key: 'id', label: 'Asset code' }, { key: 'type', label: 'Asset type' }, { key: 'department', label: 'Department', render: (row) => <DepartmentBadge department={row.department} /> }, { key: 'section', label: 'Section' }, { key: 'criticality', label: 'Criticality', render: (row) => <PriorityBadge value={row.criticality} /> }, { key: 'status', label: 'Status', render: (row) => <StatusBadge tone={String(row.status).toLowerCase().includes('risk') ? 'critical' : 'low'}>{row.status}</StatusBadge> }, { key: 'action', label: 'Action', render: (row) => <button className="text-button" onClick={() => setSelected(row)}>View details</button> }]
+  return <><PageHeader eyebrow={`${department} / ASSETS`} title="Department assets" description="Review the asset base that anchors this department's maintenance plan." actions={<StatusBadge tone={isMock ? 'demo' : 'low'}>{isMock ? 'Demo data' : 'Live API'}</StatusBadge>} />{error && !isMock && <AlertPanel tone="warning" title="Asset data unavailable" description={error.message} action={<button className="text-button" onClick={refresh}>Retry</button>} />}<DataTable columns={columns} rows={assets} emptyMessage={`No ${department} assets are available.`} /><DetailDrawer open={Boolean(selected)} title={selected?.id ?? 'Asset details'} onClose={() => setSelected(null)}>{selected && <dl className="detail-list"><div><dt>Asset type</dt><dd>{selected.type}</dd></div><div><dt>Department</dt><dd><DepartmentBadge department={selected.department} /></dd></div><div><dt>Section</dt><dd>{selected.section}</dd></div><div><dt>Criticality</dt><dd><PriorityBadge value={selected.criticality} /></dd></div><div><dt>Status</dt><dd>{selected.status}</dd></div><div><dt>Last maintenance</dt><dd>{selected.lastMaintenance}</dd></div></dl>}</DetailDrawer></> }

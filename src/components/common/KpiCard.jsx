@@ -1,0 +1,3 @@
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
+
+export function KpiCard({ label, value, detail, trend, tone = 'blue', icon: Icon }) { const positive = trend?.direction !== 'down'; return <article className="kpi-card"><div className={`kpi-accent ${tone}`} /><div className="kpi-card-top"><span>{label}</span>{Icon && <div className="kpi-icon"><Icon size={16} /></div>}</div><strong>{value}</strong>{(detail || trend) && <div className="kpi-card-bottom">{trend && <span className={`kpi-trend ${positive ? 'positive' : 'negative'}`}>{positive ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}{trend.value}</span>}<small>{detail}</small></div>}</article> }

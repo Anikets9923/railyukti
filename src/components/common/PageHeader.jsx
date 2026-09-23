@@ -1,0 +1,1 @@
+export function PageHeader({ eyebrow, title, description, actions }) { return <div className="page-header"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1>{description && <p className="subhead">{description}</p>}</div>{actions && <div className="page-header-actions">{actions}</div>}</div> }

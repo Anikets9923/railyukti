@@ -1,0 +1,1 @@
+export function PageIntro({ eyebrow = 'RAILYUKTI', title, description }) { return <div className="page-intro"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p className="subhead">{description}</p></div></div> }

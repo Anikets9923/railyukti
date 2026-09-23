@@ -1,0 +1,11 @@
+// Temporary planner fixtures. Replace generation with the exact backend planning contract when provided.
+const tasks = [
+  { id: 'ENG-2410', department: 'ENGINEERING', section: 'GZB-MTC', asset: 'Bridge 112A', priority: 'Critical', status: 'Overdue', dueDate: '2026-09-07' },
+  { id: 'TRD-2408', department: 'TRD', section: 'ALD-CNB', asset: 'OHE Mast 14/7', priority: 'Critical', status: 'Assigned', dueDate: '2026-09-07' },
+  { id: 'ST-2412', department: 'S&T', section: 'NDLS Yard', asset: 'Relay Room B-12', priority: 'High', status: 'Scheduled', dueDate: '2026-09-08' },
+  { id: 'TRD-2387', department: 'TRD', section: 'ALD-CNB', asset: 'OHE Mast 11/2', priority: 'Medium', status: 'Unscheduled', dueDate: '2026-09-09' },
+]
+const windows = [{ id: 'WIN-01', section: 'ALD-CNB', date: '2026-09-08', start: '01:15', end: '03:00', status: 'Available' }, { id: 'WIN-02', section: 'NDLS-GZB', date: '2026-09-08', start: '22:40', end: '00:10', status: 'Available' }]
+const trains = [{ trainNumber: '12301 Rajdhani', section: 'NDLS-GZB', date: '2026-09-08', start: '22:35', end: '22:52' }, { trainNumber: '12002 Shatabdi', section: 'ALD-CNB', date: '2026-09-08', start: '06:00', end: '06:10' }]
+const generatedPlan = [{ id: 'GEN-01', department: 'TRD', section: 'ALD-CNB', date: '2026-09-08', start: '01:15', end: '03:00', duration: '01h 45m', tasks: ['TRD-2408', 'TRD-2387'], status: 'Proposed' }, { id: 'GEN-02', department: 'ENGINEERING', section: 'GZB-MTC', date: '2026-09-08', start: '03:15', end: '04:30', duration: '01h 15m', tasks: ['ENG-2410'], status: 'Proposed' }, { id: 'GEN-03', department: 'S&T', section: 'NDLS Yard', date: '2026-09-08', start: '00:40', end: '01:20', duration: '40m', tasks: ['ST-2412'], status: 'Proposed' }]
+export const blockPlannerMockService = { async getTasks() { return tasks }, async getWindows() { return windows }, async getTrains() { return trains }, async getPlan() { return [] }, async generate() { return { blocks: generatedPlan, generatedAt: '2026-09-07T10:15:00Z', source: 'Prototype simulation', explanation: 'Prototype explanation: blocks were grouped by department and placed into the available demo windows without overlapping the listed train constraints.' } } }

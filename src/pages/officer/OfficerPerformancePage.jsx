@@ -1,0 +1,8 @@
+import { AlertPanel } from '../../components/common/AlertPanel'
+import { DataTable } from '../../components/common/DataTable'
+import { DepartmentBadge } from '../../components/common/DepartmentBadge'
+import { PageHeader } from '../../components/common/PageHeader'
+import { StatusBadge } from '../../components/common/StatusBadge'
+import { useDivisionalWorkspace } from '../../hooks/useDivisionalWorkspace'
+
+export function OfficerPerformancePage() { const { performance, isMock, error, refresh } = useDivisionalWorkspace(); const columns = [{ key: 'department', label: 'Department', render: (row) => <DepartmentBadge department={row.department} /> }, { key: 'completion', label: 'Completion', render: (row) => row.completion ?? 'Not provided' }, { key: 'overdue', label: 'Overdue tasks' }, { key: 'conflicts', label: 'Conflicts' }, { key: 'trend', label: 'Trend', render: (row) => <StatusBadge tone={row.trend === 'Review required' ? 'high' : 'low'}>{row.trend}</StatusBadge> }]; return <><PageHeader eyebrow="DIVISION CONTROL / PERFORMANCE" title="Department performance" description="Compare readiness and operational friction across Engineering, TRD and S&T." />{isMock && <AlertPanel tone="info" title="Prototype performance values" description="Completion percentages are not fabricated. Fields unavailable from the backend are shown as not provided." />}{error && !isMock && <AlertPanel tone="warning" title="Performance data unavailable" description={error.message} action={<button className="text-button" onClick={refresh}>Retry</button>} />}<DataTable columns={columns} rows={performance} emptyMessage="No department performance data returned." /></> }

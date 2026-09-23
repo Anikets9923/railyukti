@@ -1,0 +1,13 @@
+import { useState } from 'react'
+import { ArrowRight, Check, TrainFront } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { DEMO_USERS } from '../../auth/roles'
+import { useAuth } from '../../auth/useAuth'
+
+export function LoginPage() {
+  const { loginAsDemo } = useAuth(); const navigate = useNavigate(); const [selectedId, setSelectedId] = useState(DEMO_USERS[4].id); const [department, setDepartment] = useState('DIVISIONAL')
+  const selectedUser = DEMO_USERS.find((user) => user.id === selectedId)
+  function handleUserChange(event) { const nextUser = DEMO_USERS.find((user) => user.id === event.target.value); setSelectedId(event.target.value); if (nextUser) setDepartment(nextUser.department) }
+  function continueAsDemo(event) { event.preventDefault(); loginAsDemo(selectedId, department); navigate('/') }
+  return <main className="login-page"><section className="login-visual"><div className="login-brand"><div className="brand-mark"><TrainFront size={22} /></div><strong>RailYukti</strong></div><div className="visual-copy"><p className="eyebrow">SIH 2026 · OPERATIONS CONTROL</p><h1>Make every maintenance block count.</h1><p>One planning surface for asset availability, train movement and coordinated railway maintenance.</p></div><div className="visual-footer"><span><i /> Network foundation</span><span>Prototype workspace · v0.1</span></div></section><section className="login-panel"><div className="login-form-wrap"><p className="eyebrow">WELCOME TO RAILYUKTI</p><h2>Choose a demo workspace</h2><p className="login-subtitle">Select the operating role you want to explore. This prototype session is saved locally in your browser.</p><form onSubmit={continueAsDemo}><label htmlFor="demo-user">Demo identity</label><div className="select-wrap"><select id="demo-user" value={selectedId} onChange={handleUserChange}>{DEMO_USERS.map((user) => <option value={user.id} key={user.id}>{user.name}</option>)}</select><ArrowRight size={16} /></div><label htmlFor="department">Department / context</label><select id="department" value={department} onChange={(event) => setDepartment(event.target.value)}><option value="ENGINEERING">Engineering</option><option value="TRD">Traction Distribution (TRD)</option><option value="S&T">Signal &amp; Telecommunication (S&amp;T)</option><option value="OPERATING">Operating / COA</option><option value="DIVISIONAL">Divisional control</option><option value="ADMIN">System administration</option></select><button className="primary-button login-submit" type="submit">Continue as {selectedUser?.name ?? 'demo user'} <ArrowRight size={17} /></button></form></div></section></main>
+}
