@@ -1,614 +1,386 @@
-# 🚆 AI-Powered Automatic Block Planning System
+# 🚆 Railyukti
 
-> **Smart, coordinated and data-driven maintenance block planning for Indian Railways**
+### AI-Powered Automatic Block Planning to Maximize Asset Availability for Train Operations
 
-**SIH 2026 — Problem Statement: SIH26027**
+> **Smart India Hackathon 2026 — Ministry of Railways**
 
----
+Railyukti is an **AI-assisted decision-support system** designed to improve railway maintenance block planning by coordinating maintenance requirements, train operations, corridor availability, and resource constraints.
 
-## 📌 Overview
-
-Maintenance of fixed railway infrastructure is currently handled across multiple departments such as **Engineering, Traction Distribution (TRD), and Signal & Telecom (S&T)**.
-
-Maintenance requests, defects, overdue tasks, train schedules, and available maintenance corridors originate from different systems. Because these activities are not always planned through a single coordinated intelligence layer, maintenance blocks may be underutilized, duplicated, or scheduled inefficiently.
-
-Our project proposes an **AI-powered Automatic Block Planning System** that integrates maintenance requirements with railway corridor availability and train schedules to generate optimized maintenance block plans.
-
-The system prioritizes maintenance activities based on **criticality, urgency, severity, and impact on asset availability**, and then uses an optimization engine to coordinate activities across departments.
+The system helps railway planners identify **what maintenance should be prioritized and when it can be safely scheduled**, while considering operational constraints and minimizing disruption to train services.
 
 ---
 
-## 🎯 Problem Statement
+## 📌 Problem Statement
 
-The existing maintenance block planning process involves decentralized planning across:
+Railway maintenance activities are carried out by multiple departments such as:
 
-* Engineering
+* Engineering (ENG)
 * Traction Distribution (TRD)
 * Signal & Telecom (S&T)
-* Railway Operations
 
-Maintenance data is maintained separately, while train timetable and corridor availability information is handled through operational systems.
+Maintenance requirements, asset conditions, train schedules, and available maintenance windows need to be coordinated before a block can be planned.
 
-This can result in:
+When these activities are planned independently, it can lead to:
 
-* Inefficient block utilization
-* Poor coordination between departments
-* Unnecessary asset downtime
-* Scheduling conflicts
-* Underutilized maintenance windows
+* Conflicting maintenance requests
+* Under-utilized block windows
+* Difficulty coordinating multiple departments
 * Increased impact on train operations
+* Delays in completing critical maintenance
+* Reduced availability of railway assets
+
+The challenge is to create an intelligent system that can coordinate these requirements and generate an optimized maintenance plan.
 
 ---
 
-## 💡 Our Solution
+# 💡 Our Solution — Railyukti
 
-We are building a centralized **AI-powered decision-support and automatic planning platform** that:
+Railyukti provides an integrated planning workflow that combines:
 
-1. Integrates maintenance and defect data from multiple departments.
-2. Analyzes asset criticality and maintenance urgency.
-3. Considers train timetable and corridor availability.
-4. Identifies compatible maintenance activities across departments.
-5. Generates optimized maintenance blocks.
-6. Produces weekly and monthly maintenance plans.
-7. Provides explainable recommendations and optimization analytics.
+**Maintenance Requirements + Asset Conditions + Train Operations + Block Availability + Resource Constraints**
 
-### Core Concept
+to generate an optimized maintenance block plan.
 
-```text
-Maintenance Data
-       +
-Train Timetable
-       +
-Corridor Availability
-       +
-Goods Train Forecast
-       ↓
-┌───────────────────────┐
-│  AI Priority Engine   │
-└───────────┬───────────┘
-            ↓
-┌───────────────────────┐
-│ Optimization Engine   │
-│   Constraint Solver   │
-└───────────┬───────────┘
-            ↓
-     Optimized Block Plan
-            ↓
-     Railway Dashboard
-```
+The system follows two major intelligence stages:
 
----
+### 🧠 AI Priority Intelligence
 
-## 🧠 Key Features
-
-### 1. Multi-Department Data Integration
-
-The platform is designed to integrate data representing:
-
-* **TMS** — Track/Engineering maintenance
-* **SMMS** — Signal & Telecom maintenance
-* **TDMS** — Traction Distribution maintenance
-* **COA** — Train and corridor operational information
-
-For the prototype, these systems are represented through **synthetic/mock datasets and API-ready interfaces**.
-
----
-
-### 2. AI-Based Maintenance Prioritization
-
-Each maintenance task receives a priority score based on factors such as:
+Determines which maintenance activities should receive higher priority based on factors such as:
 
 * Asset criticality
 * Defect severity
-* Maintenance urgency
+* Urgency
 * Overdue duration
+* Failure risk
 * Train traffic impact
-* Potential asset availability impact
 
-Example:
+### ⚙️ Optimization Intelligence
+
+Uses operational and resource constraints to determine suitable maintenance windows while reducing conflicts with train operations.
+
+### 👨‍💼 Human-in-the-Loop
+
+Railyukti is designed as a **decision-support system**.
+
+The generated plan can be reviewed and approved by authorized railway personnel before implementation.
+
+---
+
+# 🔄 System Workflow
 
 ```text
-Asset Criticality      → 30%
-Defect Severity        → 25%
-Urgency                → 20%
-Overdue Duration       → 15%
-Traffic Impact         → 10%
-```
-
-The resulting score helps classify tasks as:
-
-```text
-🔴 Critical
-🟠 High
-🟡 Medium
-🟢 Low
+Maintenance & Asset Data
+          │
+          ▼
+   Data Integration
+          │
+          ▼
+   AI Priority Analysis
+          │
+          ▼
+Traffic & Availability Analysis
+          │
+          ▼
+   Constraint Optimization
+          │
+          ▼
+  Optimized Block Plan
+          │
+          ▼
+ Visualization & Analytics
+          │
+          ▼
+Human Review & Approval
 ```
 
 ---
 
-### 3. Multi-Department Block Coordination
-
-The system identifies maintenance activities that can potentially be performed during the same corridor block.
-
-Example:
+# 🏗️ System Architecture
 
 ```text
-Engineering → 10:00–12:00
-S&T         → 10:30–11:30
-TRD         → 11:00–13:00
+ ┌─────────────────────────────────────────┐
+ │           Railway Data Sources          │
+ │                                         │
+ │ TMS │ SMMS │ TDMS │ COA │ Maintenance   │
+ └───────────────────┬─────────────────────┘
+                     │
+                     ▼
+        ┌────────────────────────┐
+        │ Data Integration &     │
+        │ Normalization Layer    │
+        └────────────┬───────────┘
+                     │
+                     ▼
+        ┌────────────────────────┐
+        │ AI Priority Engine     │
+        │                        │
+        │ Criticality            │
+        │ Severity               │
+        │ Urgency                │
+        │ Risk                   │
+        │ Traffic Impact         │
+        └────────────┬───────────┘
+                     │
+                     ▼
+        ┌────────────────────────┐
+        │ Optimization Engine    │
+        │                        │
+        │ Time Constraints       │
+        │ Train Conflicts        │
+        │ Block Availability     │
+        │ Resources              │
+        └────────────┬───────────┘
+                     │
+                     ▼
+        ┌────────────────────────┐
+        │ Optimized Maintenance  │
+        │ Block Plan             │
+        └────────────┬───────────┘
+                     │
+                     ▼
+        ┌────────────────────────┐
+        │ Planning Dashboard &   │
+        │ Analytics               │
+        └────────────────────────┘
 ```
-
-Instead of treating these as independent requests, the optimizer can generate:
-
-```text
-Combined Block
-10:00 ───────────────── 13:00
-
-Engineering + S&T + TRD
-```
-
-This improves utilization of maintenance windows and reduces unnecessary separate blocks.
 
 ---
 
-### 4. Constraint-Based Optimization
+# ✨ Key Features
 
-The optimization engine considers constraints such as:
+### 🔹 Multi-Department Coordination
 
-* Train movements
+Brings maintenance requirements from different railway departments into a unified planning process.
+
+### 🔹 AI-Based Maintenance Prioritization
+
+Helps identify maintenance activities that require earlier attention based on operational and asset-related factors.
+
+### 🔹 Intelligent Block Planning
+
+Considers available maintenance windows and operational constraints while generating plans.
+
+### 🔹 Train Operation Awareness
+
+Considers train schedules and corridor availability to reduce conflicts between maintenance and train movement.
+
+### 🔹 Resource-Aware Planning
+
+Planning can consider available maintenance resources and operational constraints.
+
+### 🔹 Conflict Reduction
+
+Identifies potential scheduling conflicts before finalizing a maintenance plan.
+
+### 🔹 Plan Visualization
+
+Provides an intuitive view of maintenance activities and their scheduled windows.
+
+### 🔹 Analytics & Monitoring
+
+Provides insights into maintenance workload, scheduling, block utilization, and planning performance.
+
+### 🔹 Explainable Decisions
+
+The system is designed to provide understandable reasons behind maintenance prioritization and scheduling decisions.
+
+---
+
+# 🧠 Intelligence Behind Railyukti
+
+Railyukti separates the planning problem into two complementary questions:
+
+### **1. What should be done first?**
+
+The AI priority layer evaluates maintenance requirements using relevant operational and asset factors.
+
+```text
+Asset Criticality
+       +
+Defect Severity
+       +
+Urgency / Overdue Status
+       +
+Failure Risk
+       +
+Traffic Impact
+       ↓
+Maintenance Priority
+```
+
+### **2. When should it be done?**
+
+The optimization layer considers:
+
 * Available block windows
+* Train movements
 * Maintenance duration
-* Crew availability
-* Department compatibility
-* Section/location
-* Task priority
-* Block duration limits
-* Scheduling conflicts
+* Department requirements
+* Operational constraints
+* Resource availability
 
-The objective is to find a schedule that balances:
-
-```text
-Minimum downtime
-        +
-Minimum train disruption
-        +
-Maximum block utilization
-        +
-Maximum maintenance coverage
-        +
-Minimum unnecessary blocks
-```
+The result is a more coordinated maintenance schedule.
 
 ---
 
-### 5. Weekly & Monthly Planning
+# 📊 Expected Benefits
 
-The platform supports multiple planning horizons:
+Railyukti aims to support railway planners in:
 
-* Daily operational planning
-* Weekly maintenance planning
-* Monthly maintenance planning
-
-This allows planners to handle both urgent defects and planned maintenance.
-
----
-
-### 6. Explainable Recommendations
-
-Instead of only generating a schedule, the system explains why a task or block was selected.
-
-Example:
-
-```text
-BLOCK #104
-Section: A-B
-Time: 10:00–13:00
-
-Why selected?
-
-✓ 3 compatible maintenance activities
-✓ High-priority defect included
-✓ No protected train conflict
-✓ Required resources available
-✓ High block utilization
-```
+* Improving asset availability
+* Prioritizing critical maintenance
+* Better utilization of available block windows
+* Reducing scheduling conflicts
+* Coordinating multiple departments
+* Reducing unnecessary operational disruption
+* Improving maintenance planning visibility
+* Supporting faster planning decisions
 
 ---
 
-## 🏗️ System Architecture
+# 🖥️ Prototype
 
-```text
-                    ┌──────────────┐
-                    │     TMS      │
-                    └──────┬───────┘
-                           │
-                    ┌──────▼───────┐
-                    │     SMMS     │
-                    └──────┬───────┘
-                           │
-                    ┌──────▼───────┐
-                    │     TDMS     │
-                    └──────┬───────┘
-                           │
-                    ┌──────▼───────┐
-                    │     COA      │
-                    └──────┬───────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │ Data Integration     │
-                │ & Normalization     │
-                └──────────┬──────────┘
-                           │
-             ┌─────────────┴─────────────┐
-             ▼                           ▼
-    ┌─────────────────┐        ┌─────────────────┐
-    │ AI Priority     │        │ Traffic &       │
-    │ Engine          │        │ Availability    │
-    └────────┬────────┘        └────────┬────────┘
-             │                          │
-             └────────────┬─────────────┘
-                          ▼
-                ┌─────────────────────┐
-                │ Optimization Engine │
-                │   OR-Tools / CP-SAT │
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │ Optimized Block Plan│
-                └──────────┬──────────┘
-                           │
-                           ▼
-                ┌─────────────────────┐
-                │ Web Dashboard       │
-                │ Gantt + Analytics   │
-                └─────────────────────┘
-```
+The Railyukti prototype demonstrates an integrated planning workflow through a centralized interface.
 
----
+The prototype includes capabilities for:
 
-## 🛠️ Technology Stack
-
-### Frontend
-
-* React
-* Vite
-* Tailwind CSS
-* Recharts
-* Gantt/Calendar visualization
-
-### Backend
-
-* Node.js
-* Express.js
-* REST APIs
-
-### Database
-
-* PostgreSQL
-* Prisma ORM
-
-### AI / Optimization
-
-* Python
-* FastAPI
-* Scikit-learn
-* Google OR-Tools
-* Constraint Programming / CP-SAT
-
-### Development
-
-* Git & GitHub
-* Postman
-* Docker
-
----
-
-## 📂 Project Structure
-
-```text
-project-root/
-│
-├── frontend/
-│   ├── src/
-│   └── ...
-│
-├── backend/
-│   ├── src/
-│   │   ├── controllers/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   ├── middleware/
-│   │   └── utils/
-│   │
-│   ├── prisma/
-│   │   └── schema.prisma
-│   │
-│   ├── seed/
-│   └── ...
-│
-├── ai-engine/
-│   ├── models/
-│   ├── services/
-│   └── ...
-│
-├── optimization-engine/
-│   ├── solver/
-│   ├── constraints/
-│   └── ...
-│
-├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── generators/
-│
-├── docs/
-│   ├── architecture.md
-│   ├── database.md
-│   ├── api.md
-│   └── optimization.md
-│
-├── simulation/
-│
-└── README.md
-```
-
----
-
-## 🗄️ Core Data Model
-
-The prototype uses a relational data model.
-
-```text
-Department
-    │
-    ▼
-Asset
-    │
-    ├──── Defect
-    │
-    └──── Maintenance Task
-                 │
-                 ▼
-            Scheduled Task
-                 │
-                 ▼
-             Block Plan
-                 │
-                 ▼
-              Section
-                 │
-                 ▼
-               Train
-```
-
-### Main Entities
-
-* Departments
-* Sections
-* Assets
-* Defects
-* Maintenance Tasks
-* Trains
-* Train Schedules
-* Block Windows
-* Block Plans
-* Scheduled Tasks
-
----
-
-## 🔌 Backend API
-
-Example API structure:
-
-```text
-GET    /api/assets
-GET    /api/assets/:id
-
-GET    /api/maintenance
-GET    /api/maintenance/:id
-POST   /api/maintenance
-PUT    /api/maintenance/:id
-
-GET    /api/trains
-GET    /api/trains/schedule
-
-GET    /api/blocks
-GET    /api/blocks/available
-
-POST   /api/planning/generate
-GET    /api/planning
-GET    /api/planning/:id
-
-GET    /api/analytics/dashboard
-GET    /api/analytics/optimization/:id
-```
-
----
-
-## 🔄 Planning Workflow
-
-```text
-1. Collect maintenance data
-             ↓
-2. Validate & normalize data
-             ↓
-3. Analyze defects and assets
-             ↓
-4. Calculate maintenance priority
-             ↓
-5. Analyze train/corridor availability
-             ↓
-6. Identify compatible maintenance tasks
-             ↓
-7. Run optimization
-             ↓
-8. Validate constraints
-             ↓
-9. Generate block plan
-             ↓
-10. Save & visualize results
-```
-
----
-
-## 📊 Expected Prototype Metrics
-
-The prototype will compare manual/baseline scheduling with AI-optimized scheduling using measurable simulation metrics such as:
-
-* Number of maintenance blocks
-* Block utilization
-* Maintenance tasks completed
-* Critical tasks completed
-* Scheduling conflicts
-* Asset downtime
-* Estimated asset availability
-* Train disruption impact
-
-> **Note:** Prototype improvement values are generated from simulated datasets and should not be interpreted as actual Indian Railways operational statistics.
-
----
-
-## 🔐 Safety & Operational Approach
-
-The system is designed as an **AI-powered decision-support and planning system**, not as an autonomous railway control system.
-
-Generated plans should be:
-
-```text
-AI Generated
-     ↓
-Constraint Validation
-     ↓
-Human Review
-     ↓
-Approval
-     ↓
-Operational Execution
-```
-
-Final operational authority remains with authorized railway personnel.
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-Install:
-
-* Node.js
-* Python 3.x
-* PostgreSQL
-* Git
-* Docker (optional)
-
-### Clone Repository
-
-```bash
-git clone <repository-url>
-cd <project-directory>
-```
-
-### Backend Setup
-
-```bash
-cd backend
-npm install
-```
-
-Create a `.env` file:
-
-```env
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/rail_planning"
-PORT=5000
-AI_SERVICE_URL="http://localhost:8000"
-OPTIMIZATION_SERVICE_URL="http://localhost:8001"
-```
-
-Run database migration:
-
-```bash
-npx prisma migrate dev
-```
-
-Seed prototype data:
-
-```bash
-npm run seed
-```
-
-Start backend:
-
-```bash
-npm run dev
-```
-
----
-
-## 🧪 Prototype Data
-
-Because the production TMS, SMMS, TDMS and COA systems are not publicly accessible, this prototype uses **synthetic data designed to represent their relevant data structures**.
-
-The simulation includes:
-
-* Railway sections
-* Infrastructure assets
-* Defects
-* Maintenance requests
-* Train schedules
-* Goods train forecasts
+* Maintenance monitoring
+* Asset information
+* Train and schedule information
 * Block availability
-* Department resources
+* Maintenance planning
+* Optimized plan visualization
+* Planning analytics
 
-This allows the optimization system to be demonstrated without requiring access to operational railway infrastructure.
+The prototype uses **synthetic/mock data** to demonstrate the system workflow.
 
----
-
-## 👥 Team
-
-### Team: `[YOUR TEAM NAME]`
-
-**Team Size:** 6
-
-| Role                     | Responsibility                             |
-| ------------------------ | ------------------------------------------ |
-| Team Lead / Product      | Architecture, integration & coordination   |
-| AI/ML Engineer           | Maintenance priority & AI models           |
-| Optimization Engineer    | Block scheduling & constraint optimization |
-| Backend Engineer         | APIs, services & database                  |
-| Frontend Engineer        | Dashboard & planning interface             |
-| Data/Simulation Engineer | Synthetic data, simulation & analytics     |
+> **Important:** The prototype does not use live Indian Railways operational data.
 
 ---
 
-## 🎯 Project Objective
+# 🛠️ Technology Overview
 
-Our objective is to transform decentralized maintenance block planning into a **coordinated, data-driven and optimization-based planning process**.
-
-### Our vision:
-
-> **Plan smarter. Coordinate better. Minimize downtime. Maximize infrastructure availability.**
+| Layer         | Technology                                       |
+| ------------- | ------------------------------------------------ |
+| Frontend      | React, TypeScript, Vite                          |
+| UI            | Tailwind CSS                                     |
+| Visualization | Recharts / Gantt-style planning views            |
+| Backend       | Node.js, Express                                 |
+| Database      | PostgreSQL                                       |
+| ORM           | Prisma                                           |
+| AI Service    | Python, FastAPI                                  |
+| Optimization  | Constraint-based optimization / OR-Tools concept |
+| Development   | Git, GitHub, Postman, Docker                     |
 
 ---
 
-## 📌 SIH 2026
+# 📁 Repository Structure
 
-**Smart India Hackathon 2026**
+```text
+Railyukti/
+│
+├── frontend/          # User interface
+│
+├── backend/           # Core application and data services
+│
+├── ai/                # AI intelligence layer
+│
+├── dataset/           # Synthetic prototype data
+│
+├── docs/              # Project documentation
+│
+└── README.md          # Project overview
+```
 
-**Problem Statement:** SIH26027
+Detailed implementation documentation is maintained separately within the respective project areas.
 
-**Domain:** Transportation / Railway Infrastructure
+---
 
-**Solution:** AI-Powered Automatic Block Planning and Multi-Department Maintenance Scheduling
+# 🔐 Safety & Operational Approach
+
+Railyukti is designed as an **AI-assisted decision-support system**, not an autonomous railway control system.
+
+The system does not directly control railway infrastructure, train movement, signalling, or real-world block authorization.
+
+Final maintenance and operational decisions remain with **authorized railway personnel**.
+
+---
+
+# 🧪 Prototype Data
+
+The prototype uses synthetic data representing railway operational scenarios such as:
+
+* Railway assets
+* Maintenance activities
+* Defects
+* Train schedules
+* Block windows
+* Planning information
+* Analytics
+
+This allows the complete planning workflow to be demonstrated without exposing or depending on confidential railway operational data.
+
+---
+
+# 🚀 Future Scope
+
+The system can be extended with:
+
+* Integration with authorized railway information systems
+* More advanced AI-based risk prediction
+* Real-time operational data
+* Dynamic rescheduling
+* Predictive maintenance
+* Advanced multi-department optimization
+* Resource and crew optimization
+* Historical planning intelligence
+* More detailed explainability
+* Enterprise-level authentication and authorization
+
+---
+
+# 🎯 Project Vision
+
+> **“From fragmented maintenance requests to intelligent, coordinated and availability-focused railway planning.”**
+
+Railyukti aims to provide railway planners with a unified intelligence layer that helps them make better-informed maintenance planning decisions while considering the realities of train operations.
+
+---
+
+# 🏆 Smart India Hackathon 2026
+
+**Problem Statement:**
+**AI-Powered Automatic Block Planning to Maximize Asset Availability for Train Operations on Indian Railways**
+
+**Organization:** Ministry of Railways
+
+**Project:** Railyukti
+
+---
+
+# 👥 Team
+
+**Railyukti — SIH 2026 Team**
+
+A collaborative project combining:
+
+* Full-stack development
+* Artificial Intelligence
+* Optimization
+* Data engineering
+* UI/UX
+* Railway-domain problem solving
 
 ---
 
 ## ⚠️ Disclaimer
 
-This repository contains a **prototype developed for Smart India Hackathon 2026**.
+Railyukti is a **prototype developed for Smart India Hackathon 2026**.
 
-The railway data used by the prototype is simulated and does not represent confidential, operational, or production Indian Railways data.
+The system is demonstrated using synthetic/mock data and is intended for research, demonstration, and decision-support purposes.
 
-The system is intended for demonstration and research purposes and is **not intended for direct deployment in live railway operations**.
+It should not be considered a production railway control or authorization system.
+
+---
+
+⭐ **Railyukti — Making Railway Maintenance Planning Smarter, More Coordinated, and More Availability-Focused.**
