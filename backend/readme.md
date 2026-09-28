@@ -1,377 +1,695 @@
-# 🤖 Railyukti — AI Priority & Optimization Engine
+# ⚙️ Railyukti — Backend
 
-> AI-assisted maintenance prioritization and optimization for the Railyukti railway block planning platform.
+> Central API, planning orchestration, database and integration layer for the Railyukti railway maintenance planning platform.
 
 **Smart India Hackathon 2026 — SIH26027**
 
-This branch contains the **AI intelligence layer** of Railyukti.
+This branch contains the **backend system of Railyukti**.
 
-Its primary responsibility is to analyze railway maintenance tasks, calculate their priority, classify their urgency, and provide AI-generated inputs to the overall maintenance block planning pipeline.
-
-The AI layer works together with the backend and optimization components to answer two important questions:
-
-```text
-AI Priority Engine
-"What should be done first?"
-
-        +
-
-Optimization Engine
-"When and how should it be scheduled?"
-```
+The backend acts as the central integration layer between the frontend, PostgreSQL database, AI Priority Engine, and planning/optimization pipeline.
 
 ---
 
 # 🎯 Purpose
 
-Railway maintenance teams may have many tasks competing for limited maintenance windows.
+The backend is responsible for managing and coordinating the core railway planning data.
 
-Not every task has the same:
+It provides APIs for:
 
-* Asset criticality
-* Defect severity
-* Urgency
-* Failure risk
-* Train-operation impact
+* Assets
+* Maintenance tasks
+* Trains
+* Train schedules
+* Block windows
+* Planning
+* Generated plans
+* Analytics
 
-The AI engine converts these factors into a standardized **priority score from 0–100** and assigns a priority tier.
-
-This allows the downstream planning system to focus on maintenance activities that require greater attention.
+It also orchestrates the planning workflow between the database, AI service, availability information, and optimization layer.
 
 ---
 
-# 🧠 AI Priority Engine
-
-The current AI service evaluates maintenance tasks using factors including:
-
-* Asset criticality
-* Defect severity
-* Overdue duration
-* Failure risk
-* Train traffic impact
-
-The output contains a priority score and corresponding priority tier.
+# 🏗️ Backend Architecture
 
 ```text
-Maintenance Task
-       │
-       ▼
-┌──────────────────────┐
-│ Asset Criticality    │
-│ Defect Severity      │
-│ Overdue Duration     │
-│ Failure Risk         │
-│ Traffic Impact       │
-└──────────┬───────────┘
-           │
-           ▼
-    Priority Scoring
-           │
-           ▼
-      Score: 0–100
-           │
-           ▼
-┌──────────────────────┐
-│ LOW                  │
-│ MEDIUM               │
-│ HIGH                 │
-│ CRITICAL             │
-└──────────────────────┘
+                    FRONTEND
+                       │
+                       │ REST API
+                       ▼
+              ┌──────────────────┐
+              │  Node.js +       │
+              │  Express.js      │
+              └────────┬─────────┘
+                       │
+          ┌────────────┼────────────┐
+          │            │            │
+          ▼            ▼            ▼
+     PostgreSQL    AI Service   Optimization
+       + Prisma      FastAPI       Engine
+          │            │            │
+          └────────────┼────────────┘
+                       ▼
+                Generated Plan
+                       │
+                       ▼
+                 Frontend
 ```
 
 ---
 
-# 📊 Priority Classification
+# 🧩 Backend Responsibilities
 
-The engine categorizes maintenance tasks into four priority levels:
+## 1. API Layer
 
-| Tier        | Meaning                                                          |
-| ----------- | ---------------------------------------------------------------- |
-| 🟢 LOW      | Lower-priority maintenance activity                              |
-| 🟡 MEDIUM   | Moderate maintenance priority                                    |
-| 🟠 HIGH     | Important maintenance requiring earlier consideration            |
-| 🔴 CRITICAL | High-priority maintenance requiring immediate planning attention |
+Provides REST endpoints for frontend applications.
 
-The priority score is used by the planning pipeline as an input to scheduling decisions.
+## 2. Data Layer
+
+Uses PostgreSQL and Prisma to store and retrieve planning information.
+
+## 3. Planning Orchestration
+
+Coordinates:
+
+```text
+Maintenance
+    ↓
+AI Priority
+    ↓
+Available Blocks
+    ↓
+Train Constraints
+    ↓
+Optimization
+    ↓
+Generated Plan
+```
+
+## 4. Analytics
+
+Provides dashboard and optimization-related metrics.
 
 ---
 
-# 🔌 AI Service API
+# 🛠️ Technology Stack
 
-The AI engine is implemented as a **FastAPI service**.
+### Runtime
 
-### Service endpoint
+* Node.js
+
+### Framework
+
+* Express.js
+
+### Database
+
+* PostgreSQL
+
+### ORM
+
+* Prisma
+
+### API
+
+* REST
+
+### Supporting Services
+
+* Python/FastAPI AI service
+* Optimization service
+
+---
+
+# 🗄️ Database Model
+
+The backend uses a relational PostgreSQL model.
+
+```text
+Department
+    │
+    ▼
+  Section
+    │
+    ├──────── Asset
+    │            │
+    │            ├── Defect
+    │            │
+    │            └── Maintenance Task
+    │
+    └──────── Train
+                  │
+                  └── Train Schedule
+
+Maintenance Task
+        │
+        ▼
+ Scheduled Task
+        │
+        ▼
+    Block Plan
+```
+
+### Core entities
+
+* Department
+* Section
+* Asset
+* Defect
+* Maintenance Task
+* Train
+* Train Schedule
+* Block Window
+* Block Plan
+* Scheduled Task
+
+---
+
+# 🔌 REST API
+
+## Health
 
 ```http
-POST /score
+GET /api/health
 ```
 
-The backend sends the maintenance-task information to the AI service.
+Used to verify that the backend service is running.
+
+---
+
+## Assets
+
+```http
+GET /api/assets
+GET /api/assets/:id
+```
+
+Provides infrastructure asset information.
+
+Example data:
+
+```text
+Asset Code
+Asset Type
+Department
+Section
+Criticality
+Status
+Last Maintenance
+Next Maintenance
+```
+
+---
+
+# 🛠️ Maintenance APIs
+
+```http
+GET    /api/maintenance
+GET    /api/maintenance/:id
+POST   /api/maintenance
+PUT    /api/maintenance/:id
+```
+
+Maintenance records include information such as:
+
+* Task code
+* Task type
+* Description
+* Severity
+* Priority score
+* Status
+* Due date
+* Overdue days
+* Estimated duration
+* Department
+* Asset
+
+---
+
+# 🚆 Train APIs
+
+```http
+GET /api/trains
+GET /api/trains/:id
+GET /api/trains/schedule
+```
+
+Train schedule information is required when evaluating maintenance block availability and possible scheduling conflicts.
+
+---
+
+# 🧱 Block APIs
+
+```http
+GET /api/blocks
+GET /api/blocks/:id
+GET /api/blocks/available
+```
+
+Block information includes the maintenance windows available for planning.
+
+---
+
+# 🤖 Planning APIs
+
+### Generate Plan
+
+```http
+POST /api/planning/generate
+```
+
+Example request:
+
+```json
+{
+  "start_date": "2026-09-07",
+  "end_date": "2026-09-13",
+  "departments": [
+    "ENG",
+    "TRD",
+    "SNT"
+  ]
+}
+```
+
+The planning endpoint coordinates the planning pipeline.
+
+```text
+POST /planning/generate
+          │
+          ▼
+Maintenance Tasks
+          │
+          ▼
+AI Priority
+          │
+          ▼
+Available Blocks
+          │
+          ▼
+Train Constraints
+          │
+          ▼
+Optimization
+          │
+          ▼
+Generated Plan
+          │
+          ▼
+Database
+```
+
+### Retrieve Plans
+
+```http
+GET /api/planning
+GET /api/planning/:id
+```
+
+---
+
+# 📊 Analytics APIs
+
+Dashboard:
+
+```http
+GET /api/analytics/dashboard
+```
+
+Optimization details:
+
+```http
+GET /api/analytics/optimization/:id
+```
+
+Dashboard analytics can include:
+
+* Total maintenance tasks
+* Pending tasks
+* Critical tasks
+* Overdue tasks
+* Scheduled tasks
+* Unscheduled tasks
+* Total block windows
+* Used block windows
+* Average block utilization
+* Department-wise task counts
+
+---
+
+# 🔄 Planning Service
+
+The planning workflow is the main backend orchestration process.
+
+```text
+1. Retrieve maintenance tasks
+             ↓
+2. Analyze task information
+             ↓
+3. Request AI priority scores
+             ↓
+4. Retrieve available block windows
+             ↓
+5. Retrieve train schedule constraints
+             ↓
+6. Identify compatible tasks
+             ↓
+7. Run optimization
+             ↓
+8. Validate generated schedule
+             ↓
+9. Create block plan
+             ↓
+10. Save scheduled tasks
+             ↓
+11. Return generated plan
+```
+
+---
+
+# 🤖 AI Integration
+
+The backend communicates with the separate AI Priority Engine.
+
+```text
+Backend
+   │
+   │ Maintenance task data
+   ▼
+FastAPI AI Service
+   │
+   │ Score + Tier
+   ▼
+Backend
+   │
+   ▼
+Planning Pipeline
+```
+
+The AI service runs separately from the Node.js backend.
+
+Example environment configuration:
+
+```env
+AI_SERVICE_URL=http://localhost:8000
+```
+
+---
+
+# ⚙️ Optimization Integration
+
+The backend also acts as the integration point for the optimization layer.
 
 Conceptually:
 
 ```text
-Backend
-   │
-   │ Maintenance Task Data
-   ▼
-AI Priority Engine
-   │
-   │ Priority Score + Tier
-   ▼
-Backend
-   │
-   ▼
-Planning / Optimization
+Maintenance Data
+      +
+AI Priority
+      +
+Train Schedule
+      +
+Block Windows
+      +
+Resources
+      ↓
+Optimization
+      ↓
+Feasible Maintenance Plan
 ```
 
-The service also provides interactive API documentation through FastAPI:
-
-```text
-http://localhost:8000/docs
-```
+The generated result is persisted by the backend and exposed to the frontend through the planning APIs.
 
 ---
 
-# 🧩 AI Service Components
+# 📦 API Response Format
 
-```text
-ai-engine/
-│
-├── app.py
-│
-├── priority_score.py
-│
-├── data/
-│   └── sample JSON data
-│
-├── requirements.txt
-│
-└── AI_SERVICE_CONTRACT_FOR_BACKEND.md
+Successful API responses follow a common structure:
+
+```json
+{
+  "success": true,
+  "message": "Operation successful",
+  "data": {}
+}
 ```
 
-### `app.py`
+Error responses follow:
 
-Runs the live FastAPI service consumed by the Railyukti backend.
+```json
+{
+  "success": false,
+  "message": "Error message"
+}
+```
 
-### `priority_score.py`
-
-Provides the standalone scoring implementation for local testing without running the API server.
-
-### `data/`
-
-Contains sample data used for local AI testing.
-
-### `AI_SERVICE_CONTRACT_FOR_BACKEND.md`
-
-Defines the expected communication format between the backend and AI service.
+This consistent response structure allows the frontend to handle API results uniformly.
 
 ---
 
-# ⚙️ Running the AI Service
-
-## Prerequisites
-
-* Python 3.x
-* pip
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Start the service:
-
-```bash
-uvicorn app:app --reload --port 8000
-```
-
-The service runs at:
+# 📁 Backend Structure
 
 ```text
-http://localhost:8000
+backend/
+│
+├── src/
+│   ├── controllers/
+│   ├── routes/
+│   ├── services/
+│   ├── middleware/
+│   └── utils/
+│
+├── prisma/
+│   └── schema.prisma
+│
+├── seed/
+│
+├── tests/
+│
+├── .env
+├── package.json
+└── README.md
 ```
 
-Interactive API documentation:
+### Controllers
 
-```text
-http://localhost:8000/docs
-```
+Handle incoming API requests.
+
+### Routes
+
+Define REST API endpoints.
+
+### Services
+
+Contain planning and business logic.
+
+### Middleware
+
+Handles common request processing and validation.
+
+### Prisma
+
+Provides database access through the Prisma ORM.
+
+### Tests
+
+Contains backend service/API tests.
 
 ---
 
-# 🧪 Local Scoring Test
+# 🧪 Testing
 
-The scoring logic can also be tested without starting FastAPI.
-
-```bash
-python priority_score.py
-```
-
-This version reads local JSON data and prints the calculated results.
-
----
-
-# 🚆 Railway Domain Context
-
-The AI engine is designed specifically for railway maintenance planning.
+Backend functionality can be tested through the project test suite.
 
 Example:
 
-```text
-Asset:
-Track Section A-B
-
-Asset Criticality:
-HIGH
-
-Defect Severity:
-HIGH
-
-Overdue Duration:
-32 days
-
-Failure Risk:
-HIGH
-
-Train Traffic Impact:
-HIGH
-
-          ↓
-
-AI Priority Score
-          ↓
-
-CRITICAL
+```bash
+npm test
 ```
 
-The resulting priority is then passed into the planning workflow.
+API endpoints can also be tested using tools such as:
 
----
+* Postman
+* REST clients
+* Frontend application
 
-# 🔗 Integration With Railyukti
+Health check:
 
-The AI branch does not operate as an isolated application.
-
-Its position in the complete system is:
-
-```text
-                  RAILYUKTI
-                     │
-             Maintenance Data
-                     │
-                     ▼
-            ┌─────────────────┐
-            │ Backend         │
-            └────────┬────────┘
-                     │
-                     ▼
-            ┌─────────────────┐
-            │ AI Priority     │
-            │ Engine          │
-            └────────┬────────┘
-                     │
-             Priority Results
-                     │
-                     ▼
-            ┌─────────────────┐
-            │ Optimization /  │
-            │ Planning        │
-            └────────┬────────┘
-                     │
-                     ▼
-              Optimized Plan
+```http
+GET /api/health
 ```
 
 ---
 
-# 📈 Role in Optimization
+# 🚀 Getting Started
 
-The AI-generated priority is not the final schedule.
+## Prerequisites
 
-Instead:
+Install:
 
-```text
-AI
- ↓
-Task Priority
- ↓
-Available Blocks
- ↓
-Train Constraints
- ↓
-Resource Constraints
- ↓
-Optimization
- ↓
-Final Maintenance Plan
-```
+* Node.js
+* npm
+* PostgreSQL
+* Git
 
-This separation allows the system to distinguish between:
+Optional:
 
-**AI decision support**
-
-and
-
-**constraint-based scheduling.**
+* Docker
+* Postman
 
 ---
 
-# 🛡️ AI Safety Approach
+## Install dependencies
 
-The AI engine provides recommendations and priority information.
-
-It does not independently:
-
-* Control trains
-* Operate railway infrastructure
-* Approve maintenance blocks
-* Execute railway operations
-
-The intended workflow is:
-
-```text
-AI Recommendation
-       ↓
-Constraint Validation
-       ↓
-Planner Review
-       ↓
-Authorized Approval
+```bash
+npm install
 ```
 
 ---
 
-# 📌 Current Scope
+## Configure environment
 
-The AI branch currently provides the priority-scoring service and supporting local testing components.
+Create `.env`:
 
-The broader Railyukti architecture is designed to connect AI prioritization with block scheduling and optimization.
-
-> All prototype data is synthetic and intended for demonstration purposes.
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/rail_planning"
+PORT=5000
+AI_SERVICE_URL="http://localhost:8000"
+OPTIMIZATION_SERVICE_URL="http://localhost:8001"
+```
 
 ---
 
-# 🚀 Future Extensions
+## Database Migration
 
-Potential extensions include:
+Run:
 
-* Historical failure prediction
-* Improved asset failure-risk models
-* Resource-aware prioritization
-* Learning from previous maintenance outcomes
-* More detailed train traffic impact modelling
-* Multi-objective optimization
-* Optimization explainability
-* Continuous model evaluation
+```bash
+npx prisma migrate dev
+```
+
+---
+
+## Seed Prototype Data
+
+```bash
+npm run seed
+```
+
+---
+
+## Start Development Server
+
+```bash
+npm run dev
+```
+
+The backend runs on:
+
+```text
+http://localhost:5000
+```
+
+API base path:
+
+```text
+http://localhost:5000/api
+```
+
+---
+
+# 🔗 Integration With Frontend
+
+The frontend communicates with the backend using:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+The backend therefore acts as the single API gateway for the frontend.
+
+```text
+React Frontend
+      │
+      ▼
+Express Backend
+      │
+ ┌────┼─────────────┐
+ ▼    ▼             ▼
+DB    AI        Optimization
+```
+
+---
+
+# 🧪 Prototype Data
+
+The backend uses synthetic railway data because the prototype does not have access to live production TMS, SMMS, TDMS, or COA databases.
+
+The prototype can contain:
+
+* Departments
+* Sections
+* Assets
+* Defects
+* Maintenance tasks
+* Trains
+* Train schedules
+* Block windows
+* Planning data
+* Analytics data
+* Department resources
+
+This data allows the complete planning workflow to be demonstrated.
+
+---
+
+# 🔐 Backend Safety Approach
+
+The backend is responsible for planning and decision support.
+
+It does not directly control:
+
+* Train movements
+* Railway signalling
+* Track infrastructure
+* Electrical infrastructure
+* Operational railway systems
+
+The backend generates planning information for review by authorized users.
+
+---
+
+# 🎯 Backend Role in Railyukti
+
+The backend is the **central orchestration layer**.
+
+```text
+             FRONTEND
+                 │
+                 ▼
+          ┌─────────────┐
+          │   BACKEND   │
+          └──────┬──────┘
+                 │
+       ┌─────────┼─────────┐
+       ▼         ▼         ▼
+    DATABASE     AI    OPTIMIZATION
+       │         │         │
+       └─────────┼─────────┘
+                 ▼
+          GENERATED PLAN
+                 │
+                 ▼
+             FRONTEND
+```
+
+Its primary responsibility is to make the different Railyukti components work together as one planning system.
 
 ---
 
 # ⚠️ Disclaimer
 
-This AI engine is part of the Railyukti prototype developed for Smart India Hackathon 2026.
+This backend is part of the Railyukti prototype developed for Smart India Hackathon 2026.
 
-It uses synthetic/demo data and is not connected to live or confidential Indian Railways operational systems.
+The data used by the system is synthetic/demo data and does not represent confidential or production Indian Railways data.
 
-It is intended for research, demonstration, and prototype evaluation.
+The backend is intended for demonstration, research, and prototype evaluation and is not intended for direct deployment in live railway operations.
