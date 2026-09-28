@@ -1,0 +1,26 @@
+[
+  {
+    "audit_code": "AUDIT-0001",
+    "user_code": "DEMO-ADMIN-001",
+    "action": "SEED",
+    "resource_type": "SYSTEM_CONFIGURATION",
+    "resource_id": "demo.data_origin",
+    "details": {
+      "dataOrigin": "SYNTHETIC"
+    },
+    "occurred_at": "2026-09-05T12:00:00Z",
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "audit_code": "AUDIT-0002",
+    "user_code": "DEMO-ENG-PLANNER-001",
+    "action": "SUBMIT",
+    "resource_type": "BLOCK_REQUEST",
+    "resource_id": "BR-0001",
+    "details": {
+      "status": "PENDING"
+    },
+    "occurred_at": "2026-09-06T08:00:00Z",
+    "source_system": "SYNTHETIC_ADMIN"
+  }
+]

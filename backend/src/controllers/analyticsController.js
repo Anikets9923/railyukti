@@ -14,4 +14,9 @@ const getOptimization = asyncHandler(async (request, response) => {
   return sendSuccess(response, "Optimization analytics retrieved successfully", analytics);
 });
 
-module.exports = { getDashboard, getOptimization };
+const getPerformance = asyncHandler(async (request, response) => {
+  const performance = await analyticsService.listDepartmentPerformance(request.query);
+  return sendSuccess(response, "Department performance retrieved successfully", performance);
+});
+
+module.exports = { getDashboard, getOptimization, getPerformance };

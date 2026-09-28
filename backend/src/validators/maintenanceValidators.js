@@ -18,6 +18,13 @@ const requiredFields = [
   "estimatedDuration",
 ];
 
+const maintenanceStatusAliases = {
+  ASSIGNED: MaintenanceTaskStatus.PLANNED,
+  "IN PROGRESS": MaintenanceTaskStatus.IN_PROGRESS,
+  COMPLETED: MaintenanceTaskStatus.COMPLETED,
+  CANCELLED: MaintenanceTaskStatus.CANCELLED,
+};
+
 function validateMaintenancePayload(body, partial = false) {
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     throw new AppError("Request body must be a JSON object", 400);
@@ -51,7 +58,7 @@ function validateMaintenancePayload(body, partial = false) {
     data.severity = parseEnum(body.severity, DefectSeverity, "severity");
   }
   if (body.status !== undefined) {
-    data.status = parseEnum(body.status, MaintenanceTaskStatus, "status");
+    data.status = parseEnum(body.status, MaintenanceTaskStatus, "status", maintenanceStatusAliases);
   }
   if (body.dueDate !== undefined) {
     data.dueDate = parseDateOnly(body.dueDate, "dueDate");
@@ -85,4 +92,4 @@ function parseNumber(value, fieldName, minimum, maximum = Number.MAX_SAFE_INTEGE
   return parsedValue;
 }
 
-module.exports = { validateMaintenancePayload };
+module.exports = { maintenanceStatusAliases, validateMaintenancePayload };

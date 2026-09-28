@@ -10,6 +10,12 @@ const blockWindowRoutes = require("./routes/blockWindowRoutes");
 const planningRoutes = require("./routes/planningRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const { failureRiskRouter, sparesRouter, technicianRouter } = require("./routes/resourceInputRoutes");
+const defectController = require("./controllers/defectController");
+const departmentOfficerRoutes = require("./routes/departmentOfficerRoutes");
+const divisionalRoutes = require("./routes/divisionalRoutes");
+const operationsRoutes = require("./routes/operationsRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const corridorRoutes = require("./routes/corridorRoutes");
 const notFoundHandler = require("./middleware/notFoundHandler");
 const errorHandler = require("./middleware/errorHandler");
 
@@ -28,6 +34,12 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/failure-risk", failureRiskRouter);
 app.use("/api/spares", sparesRouter);
 app.use("/api/technicians", technicianRouter);
+app.use("/api/department-officer", departmentOfficerRoutes);
+app.use("/api/divisional", divisionalRoutes);
+app.use("/api/operations", operationsRoutes);
+app.use("/api/corridors", corridorRoutes);
+app.use("/api/admin", adminRoutes);
+app.post("/api/defects", defectController.createDefect);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

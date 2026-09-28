@@ -1,0 +1,28 @@
+[
+  {
+    "recommendation_code": "REC-0001",
+    "maintenance_code": "MNT-0001",
+    "asset_code": "AST-0057",
+    "department_code": "SNT",
+    "title": "Prioritize overdue synthetic maintenance task",
+    "rationale": "Synthetic score combines due date, criticality, and imported resource indicators.",
+    "priority_score": 96,
+    "status": "OPEN",
+    "recommended_date": "2026-09-14",
+    "generated_at": "2026-09-05T10:00:00Z",
+    "source_system": "SYNTHETIC_AI"
+  },
+  {
+    "recommendation_code": "REC-0002",
+    "maintenance_code": "MNT-0002",
+    "asset_code": "AST-0001",
+    "department_code": "ENG",
+    "title": "Bundle inspection with an existing synthetic access window",
+    "rationale": "Synthetic recommendation favors shared access for related maintenance work.",
+    "priority_score": 78,
+    "status": "ACCEPTED",
+    "recommended_date": "2026-09-15",
+    "generated_at": "2026-09-05T10:00:00Z",
+    "source_system": "SYNTHETIC_AI"
+  }
+]

@@ -28,4 +28,9 @@ const updateMaintenance = asyncHandler(async (request, response) => {
   return sendSuccess(response, "Maintenance task updated successfully", task);
 });
 
-module.exports = { createMaintenance, getMaintenance, listMaintenance, updateMaintenance };
+const getMaintenanceHistory = asyncHandler(async (request, response) => {
+  const result = await maintenanceService.getMaintenanceHistory(request.params.id);
+  return sendSuccess(response, "Maintenance history retrieved successfully", result);
+});
+
+module.exports = { createMaintenance, getMaintenance, getMaintenanceHistory, listMaintenance, updateMaintenance };

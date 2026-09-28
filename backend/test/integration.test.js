@@ -118,6 +118,39 @@ test("maintenance read, create, and update endpoints work", async () => {
   });
   assert.equal(update.response.status, 200);
   assert.equal(update.body.data.status, "COMPLETED");
+
+  const displayStatusUpdate = await request(`/api/maintenance/${createdId}`, {
+    method: "PUT",
+    ...jsonBody({ status: "In progress" }),
+  });
+  assert.equal(displayStatusUpdate.response.status, 200);
+  assert.equal(displayStatusUpdate.body.data.status, "IN_PROGRESS");
+});
+
+test("field supervisor defect and maintenance history endpoints work", async () => {
+  const defect = await request("/api/defects", {
+    method: "POST",
+    ...jsonBody({
+      defect_code: "DEF-API-FIELD-001",
+      asset_code: asset.assetCode,
+      description: "Synthetic field supervisor defect report",
+      severity: "HIGH",
+      status: "OPEN",
+      reported_at: "2026-09-20T09:00:00Z",
+      source_system: "SYNTHETIC_FIELD",
+    }),
+  });
+  assert.equal(defect.response.status, 201);
+  assert.equal(defect.body.data.defectCode, "DEF-API-FIELD-001");
+
+  const historicalTask = await prisma.maintenanceTask.findUnique({ where: { taskCode: "MNT-0002" } });
+  const taskHistory = await request(`/api/maintenance/${historicalTask.id}/history`);
+  assert.equal(taskHistory.response.status, 200);
+  assert.equal(taskHistory.body.data.isDemoData, true);
+
+  const assetHistory = await request(`/api/assets/${asset.id}/history`);
+  assert.equal(assetHistory.response.status, 200);
+  assert.ok(Array.isArray(assetHistory.body.data.items));
 });
 
 test("train and schedule endpoints return paginated data", async () => {
@@ -132,6 +165,10 @@ test("train and schedule endpoints return paginated data", async () => {
   const schedules = await request("/api/trains/schedule?date=2026-09-06");
   assert.equal(schedules.response.status, 200);
   assert.ok(schedules.body.data.items.length > 0);
+
+  const timetable = await request("/api/trains/timetable?date=2026-09-06");
+  assert.equal(timetable.response.status, 200);
+  assert.deepEqual(timetable.body.data.items, schedules.body.data.items);
 });
 
 test("block window endpoints return all and available windows", async () => {
@@ -145,6 +182,83 @@ test("block window endpoints return all and available windows", async () => {
   const available = await request("/api/blocks/available");
   assert.equal(available.response.status, 200);
   assert.ok(available.body.data.items.every((item) => item.status === "AVAILABLE"));
+});
+
+test("department planner recommendations, weekly plans, and block requests work", async () => {
+  const recommendations = await request("/api/planning/recommendations?department=TRD");
+  assert.equal(recommendations.response.status, 200);
+  assert.ok(Array.isArray(recommendations.body.data.items));
+
+  const weekly = await request("/api/planning/weekly?from=2026-09-01&to=2026-09-30&department=TRD");
+  assert.equal(weekly.response.status, 200);
+  assert.ok(Array.isArray(weekly.body.data.items));
+
+  const created = await request("/api/blocks", {
+    method: "POST",
+    ...jsonBody({
+      corridor: "ALD-CNB",
+      window: "22:40-00:10",
+      requestedFor: "OHE mast inspection",
+      impact: "2 train paths",
+      department: "TRD",
+    }),
+  });
+  assert.equal(created.response.status, 201);
+  assert.equal(created.body.data.status, "PENDING");
+  assert.equal(created.body.data.requestStatus, "PENDING_REVIEW");
+
+  const updated = await request(`/api/blocks/${created.body.data.id}`, {
+    method: "PUT",
+    ...jsonBody({ requestedFor: "Updated synthetic inspection" }),
+  });
+  assert.equal(updated.response.status, 200);
+  assert.equal(updated.body.data.requestedFor, "Updated synthetic inspection");
+
+  const invalidApproval = await request(`/api/blocks/${created.body.data.id}`, {
+    method: "PUT",
+    ...jsonBody({ status: "APPROVED" }),
+  });
+  assert.equal(invalidApproval.response.status, 400);
+});
+
+test("department officer requests, decisions, and performance work", async () => {
+  const requests = await request("/api/department-officer/requests?department=ENG&status=PENDING_REVIEW");
+  assert.equal(requests.response.status, 200);
+  assert.ok(requests.body.data.items.length > 0);
+  const requestId = requests.body.data.items[0].id;
+
+  const detail = await request(`/api/department-officer/requests/${requestId}`);
+  assert.equal(detail.response.status, 200);
+  assert.equal(detail.body.data.requestStatus, "PENDING_REVIEW");
+
+  const decision = await request(`/api/department-officer/requests/${requestId}/decision`, {
+    method: "POST",
+    ...jsonBody({ action: "REJECT", note: "Synthetic department-officer test decision" }),
+  });
+  assert.equal(decision.response.status, 200);
+  assert.equal(decision.body.data.request.status, "REJECTED");
+  assert.equal(decision.body.data.approval.status, "REJECTED");
+
+  const performance = await request("/api/department-officer/performance?department=ENG");
+  assert.equal(performance.response.status, 200);
+  assert.ok(performance.body.data.items.length > 0);
+});
+
+test("divisional analytics, plans, approvals, and decisions work", async () => {
+  const overview = await request("/api/analytics/overview");
+  assert.equal(overview.response.status, 200);
+  assert.equal(overview.body.data.totalMaintenanceTasks, overview.body.data.scheduledTasks + overview.body.data.unscheduledTasks);
+
+  const performance = await request("/api/analytics/performance?periodType=WEEKLY");
+  assert.equal(performance.response.status, 200);
+  assert.ok(Array.isArray(performance.body.data.items));
+
+  const weekly = await request("/api/planning/weekly");
+  const monthly = await request("/api/planning/monthly");
+  assert.equal(weekly.response.status, 200);
+  assert.equal(monthly.response.status, 200);
+  assert.ok(Array.isArray(weekly.body.data.items));
+  assert.ok(Array.isArray(monthly.body.data.items));
 });
 
 test("resource-input APIs return imported failure, spare, and technician records", async () => {
@@ -232,6 +346,65 @@ test("planning detail and optimization analytics expose persisted plan metrics",
   assert.ok(optimization.body.data.utilization >= 0 && optimization.body.data.utilization <= 100);
 });
 
+test("divisional plan approval decision persists explicitly", async () => {
+  const approvals = await request("/api/divisional/approvals");
+  assert.equal(approvals.response.status, 200);
+  assert.ok(Array.isArray(approvals.body.data.items));
+
+  const decision = await request(`/api/planning/${generatedPlan.id}/decision`, {
+    method: "POST",
+    ...jsonBody({ action: "REJECT", note: "Synthetic divisional review" }),
+  });
+  assert.equal(decision.response.status, 200);
+  assert.equal(decision.body.data.approval.status, "REJECTED");
+  assert.equal(decision.body.data.plan.status, "CANCELLED");
+});
+
+test("operations timetable, corridors, conflicts, alerts, and block reads work", async () => {
+  const timetable = await request("/api/trains/timetable?date=2026-09-06");
+  assert.equal(timetable.response.status, 200);
+  assert.ok(Array.isArray(timetable.body.data.items));
+
+  const corridors = await request("/api/corridors");
+  assert.equal(corridors.response.status, 200);
+  assert.ok(corridors.body.data.items.length > 0);
+  assert.equal(corridors.body.data.isDemoData, true);
+
+  const conflicts = await request("/api/operations/conflicts");
+  assert.equal(conflicts.response.status, 200);
+  assert.equal(conflicts.body.data.isDemoData, true);
+
+  const alerts = await request("/api/operations/alerts");
+  assert.equal(alerts.response.status, 200);
+  assert.equal(alerts.body.data.isDemoData, true);
+
+  const blocks = await request("/api/blocks");
+  const available = await request("/api/blocks/available");
+  assert.equal(blocks.response.status, 200);
+  assert.equal(available.response.status, 200);
+  assert.ok(available.body.data.items.every((item) => item.status === "AVAILABLE"));
+});
+
+test("admin resources are readable and sensitive fields are rejected", async () => {
+  const users = await request("/api/admin/users");
+  const roles = await request("/api/admin/roles");
+  const departments = await request("/api/admin/departments");
+  const sections = await request("/api/admin/sections");
+  const assets = await request("/api/admin/assets");
+  const configuration = await request("/api/admin/configuration");
+  const auditLogs = await request("/api/admin/audit-logs");
+  for (const result of [users, roles, departments, sections, assets, configuration, auditLogs]) {
+    assert.equal(result.response.status, 200);
+    assert.equal(result.body.success, true);
+    assert.ok(Array.isArray(result.body.data.items));
+  }
+  assert.equal(users.body.data.items[0].isDemo, true);
+  assert.equal(configuration.body.data.items[0].sourceSystem, "SYNTHETIC_ADMIN");
+
+  const sensitive = await request("/api/admin/users", { method: "POST", ...jsonBody({ password: "not-accepted" }) });
+  assert.equal(sensitive.response.status, 400);
+});
+
 test("repeating the same plan request does not duplicate scheduling", async () => {
   const before = await prisma.scheduledTask.findMany({ select: { maintenanceTaskId: true } });
   const beforeIds = new Set(before.map((task) => task.maintenanceTaskId));
@@ -307,6 +480,10 @@ test("dashboard analytics satisfy distinct scheduling invariants", async () => {
   assert.equal(dashboard.unscheduledTasks, unscheduled);
   assert.equal(dashboard.totalMaintenanceTasks, dashboard.scheduledTasks + dashboard.unscheduledTasks);
   assert.ok(dashboard.averageBlockUtilization >= 0 && dashboard.averageBlockUtilization <= 100);
+
+  const overview = await request("/api/analytics/overview");
+  assert.equal(overview.response.status, 200);
+  assert.deepEqual(overview.body.data, dashboard);
 
   for (const department of dashboard.departmentTaskCounts) {
     const record = await prisma.department.findUnique({ where: { code: department.departmentCode } });

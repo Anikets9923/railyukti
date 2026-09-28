@@ -92,6 +92,18 @@ async function getOptimizationAnalytics(id) {
   };
 }
 
+async function listDepartmentPerformance(query) {
+  const where = {};
+  if (query.department) where.department = { code: String(query.department).trim().toUpperCase() };
+  if (query.periodType) where.periodType = String(query.periodType).trim().toUpperCase();
+  const items = await prisma.departmentPerformance.findMany({
+    where,
+    orderBy: [{ periodStart: "desc" }, { department: { code: "asc" } }],
+    include: { department: { select: { code: true, name: true } } },
+  });
+  return { items, isDemoData: items.every((item) => item.sourceSystem.includes("SYNTHETIC")) };
+}
+
 async function getScheduledTaskCountsByDepartment() {
   const groupedTasks = await prisma.maintenanceTask.groupBy({
     by: ["departmentId"],
@@ -128,4 +140,4 @@ function average(values) {
   return values.reduce((total, value) => total + value, 0) / values.length;
 }
 
-module.exports = { getDashboardAnalytics, getOptimizationAnalytics };
+module.exports = { getDashboardAnalytics, getOptimizationAnalytics, listDepartmentPerformance };

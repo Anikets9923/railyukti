@@ -1,0 +1,44 @@
+[
+  {
+    "performance_code": "PERF-W-ENG-20260907",
+    "department_code": "ENG",
+    "period_type": "WEEKLY",
+    "period_start": "2026-09-07",
+    "period_end": "2026-09-13",
+    "total_tasks": 30,
+    "completed_tasks": 18,
+    "overdue_tasks": 4,
+    "scheduled_tasks": 12,
+    "asset_availability_score": 82.5,
+    "block_utilization": 71,
+    "source_system": "SYNTHETIC_ANALYTICS"
+  },
+  {
+    "performance_code": "PERF-W-TRD-20260907",
+    "department_code": "TRD",
+    "period_type": "WEEKLY",
+    "period_start": "2026-09-07",
+    "period_end": "2026-09-13",
+    "total_tasks": 28,
+    "completed_tasks": 16,
+    "overdue_tasks": 5,
+    "scheduled_tasks": 11,
+    "asset_availability_score": 79,
+    "block_utilization": 68.5,
+    "source_system": "SYNTHETIC_ANALYTICS"
+  },
+  {
+    "performance_code": "PERF-M-SNT-202609",
+    "department_code": "SNT",
+    "period_type": "MONTHLY",
+    "period_start": "2026-09-01",
+    "period_end": "2026-09-30",
+    "total_tasks": 42,
+    "completed_tasks": 29,
+    "overdue_tasks": 3,
+    "scheduled_tasks": 21,
+    "asset_availability_score": 86,
+    "block_utilization": 74.5,
+    "source_system": "SYNTHETIC_ANALYTICS"
+  }
+]

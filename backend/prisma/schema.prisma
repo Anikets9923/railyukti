@@ -77,6 +77,46 @@ enum ScheduledTaskStatus {
   CANCELLED
 }
 
+enum BlockRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum RecommendationStatus {
+  OPEN
+  ACCEPTED
+  DISMISSED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PlanningPeriodType {
+  WEEKLY
+  MONTHLY
+}
+
+enum OperationalConflictStatus {
+  OPEN
+  RESOLVED
+}
+
+enum OperationalAlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+enum AdminUserStatus {
+  ACTIVE
+  INACTIVE
+}
+
 model Department {
   id               String            @id @default(cuid())
   code             String            @unique @db.VarChar(20)
@@ -86,6 +126,11 @@ model Department {
   updatedAt        DateTime          @updatedAt
   assets           Asset[]
   maintenanceTasks MaintenanceTask[]
+  blockRequests    BlockRequest[]
+  recommendations  Recommendation[]
+  approvals        ApprovalRequest[]
+  performance      DepartmentPerformance[]
+  adminUsers       AdminUser[]
 }
 
 model Section {
@@ -100,6 +145,8 @@ model Section {
   trainSchedules   TrainSchedule[]
   blockWindows     BlockWindow[]
   blockPlans       BlockPlan[]
+  blockRequests    BlockRequest[]
+  corridors        Corridor[]
 }
 
 model Asset {
@@ -120,6 +167,8 @@ model Asset {
   maintenanceTasks    MaintenanceTask[]
   failureRisks        FailureRisk[]
   spareAvailabilities SpareAvailability[]
+  maintenanceHistory  MaintenanceHistory[]
+  recommendations     Recommendation[]
 
   @@index([departmentId])
   @@index([sectionId])
@@ -168,6 +217,8 @@ model MaintenanceTask {
   failureRisks             FailureRisk[]
   spareAvailabilities      SpareAvailability[]
   technicianAvailabilities TechnicianAvailability[]
+  maintenanceHistory       MaintenanceHistory[]
+  recommendations          Recommendation[]
 
   @@index([assetId])
   @@index([departmentId])
@@ -267,6 +318,7 @@ model TrainSchedule {
   updatedAt     DateTime            @updatedAt
   train         Train               @relation(fields: [trainId], references: [id], onDelete: Cascade)
   section       Section             @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  operationalConflicts OperationalConflict[]
 
   @@index([trainId])
   @@index([sectionId, date])
@@ -284,6 +336,8 @@ model BlockWindow {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   section     Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  blockRequests BlockRequest[]
+  operationalConflicts OperationalConflict[]
 
   @@index([sectionId, date])
   @@index([date, status])
@@ -303,6 +357,7 @@ model BlockPlan {
   updatedAt         DateTime        @updatedAt
   section           Section         @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   scheduledTasks    ScheduledTask[]
+  approvals         ApprovalRequest[]
 
   @@index([sectionId, date])
   @@index([date, status])
@@ -325,4 +380,241 @@ model ScheduledTask {
   @@index([maintenanceTaskId])
   @@index([blockPlanId])
   @@index([startTime, endTime])
+}
+
+model MaintenanceHistory {
+  id                String          @id @default(cuid())
+  historyCode       String          @unique @db.VarChar(50)
+  assetId           String
+  maintenanceTaskId String?
+  eventType         String          @db.VarChar(40)
+  summary           String
+  completedAt       DateTime
+  performedBy       String          @db.VarChar(80)
+  notes             String?
+  sourceSystem      String          @default("SYNTHETIC_DATA") @db.VarChar(40)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  asset             Asset           @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  maintenanceTask   MaintenanceTask? @relation(fields: [maintenanceTaskId], references: [id], onDelete: SetNull)
+
+  @@index([assetId, completedAt])
+  @@index([maintenanceTaskId])
+}
+
+model BlockRequest {
+  id              String             @id @default(cuid())
+  requestCode     String             @unique @db.VarChar(50)
+  departmentId    String
+  sectionId       String
+  blockWindowId   String?
+  corridorCode    String             @db.VarChar(50)
+  requestedWindow String             @db.VarChar(60)
+  requestedFor    String
+  impact          String
+  requestedByRole String             @db.VarChar(50)
+  status          BlockRequestStatus  @default(PENDING)
+  decisionNote    String?
+  sourceSystem    String             @default("SYNTHETIC_DATA") @db.VarChar(40)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  department      Department         @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  section         Section            @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  blockWindow     BlockWindow?       @relation(fields: [blockWindowId], references: [id], onDelete: SetNull)
+  approvals       ApprovalRequest[]
+
+  @@index([departmentId, status])
+  @@index([sectionId, createdAt])
+}
+
+model Recommendation {
+  id                String               @id @default(cuid())
+  recommendationCode String              @unique @db.VarChar(50)
+  maintenanceTaskId String
+  assetId           String
+  departmentId      String
+  title             String               @db.VarChar(160)
+  rationale         String
+  priorityScore     Float
+  status            RecommendationStatus @default(OPEN)
+  recommendedDate   DateTime?            @db.Date
+  generatedAt       DateTime
+  sourceSystem      String               @default("SYNTHETIC_AI") @db.VarChar(40)
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  maintenanceTask   MaintenanceTask     @relation(fields: [maintenanceTaskId], references: [id], onDelete: Cascade)
+  asset             Asset               @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  department        Department          @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@index([departmentId, status])
+  @@index([maintenanceTaskId])
+}
+
+model ApprovalRequest {
+  id              String         @id @default(cuid())
+  approvalCode    String         @unique @db.VarChar(50)
+  blockPlanId     String?
+  blockRequestId  String?
+  departmentId    String?
+  requestedByRole String         @db.VarChar(50)
+  requestedAction String         @db.VarChar(40)
+  status          ApprovalStatus @default(PENDING)
+  decisionNote    String?
+  decidedAt       DateTime?
+  sourceSystem    String         @default("SYNTHETIC_DATA") @db.VarChar(40)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  blockPlan       BlockPlan?     @relation(fields: [blockPlanId], references: [id], onDelete: Cascade)
+  blockRequest    BlockRequest?  @relation(fields: [blockRequestId], references: [id], onDelete: Cascade)
+  department      Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([blockPlanId])
+  @@index([blockRequestId])
+}
+
+model DepartmentPerformance {
+  id                    String              @id @default(cuid())
+  performanceCode       String              @unique @db.VarChar(60)
+  departmentId          String
+  periodType            PlanningPeriodType
+  periodStart           DateTime            @db.Date
+  periodEnd             DateTime            @db.Date
+  totalTasks            Int
+  completedTasks        Int
+  overdueTasks          Int
+  scheduledTasks        Int
+  assetAvailabilityScore Float
+  blockUtilization      Float
+  sourceSystem          String              @default("SYNTHETIC_ANALYTICS") @db.VarChar(40)
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  department            Department          @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@unique([departmentId, periodType, periodStart, periodEnd])
+  @@index([periodType, periodStart])
+}
+
+model Corridor {
+  id           String                 @id @default(cuid())
+  corridorCode String                 @unique @db.VarChar(50)
+  name         String                 @db.VarChar(120)
+  sectionId    String?
+  status       String                 @db.VarChar(30)
+  description  String
+  sourceSystem String                 @default("SYNTHETIC_OPERATIONS") @db.VarChar(40)
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  section      Section?               @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  conflicts    OperationalConflict[]
+  alerts       OperationalAlert[]
+
+  @@index([sectionId, status])
+}
+
+model OperationalConflict {
+  id              String                    @id @default(cuid())
+  conflictCode    String                    @unique @db.VarChar(50)
+  trainScheduleId String?
+  blockWindowId   String?
+  corridorId      String?
+  conflictType    String                    @db.VarChar(50)
+  severity        DefectSeverity
+  status          OperationalConflictStatus  @default(OPEN)
+  description     String
+  detectedAt      DateTime
+  resolvedAt      DateTime?
+  sourceSystem    String                    @default("SYNTHETIC_OPERATIONS") @db.VarChar(40)
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+  trainSchedule   TrainSchedule?            @relation(fields: [trainScheduleId], references: [id], onDelete: SetNull)
+  blockWindow     BlockWindow?              @relation(fields: [blockWindowId], references: [id], onDelete: SetNull)
+  corridor        Corridor?                 @relation(fields: [corridorId], references: [id], onDelete: SetNull)
+  alerts          OperationalAlert[]
+
+  @@index([status, severity])
+  @@index([trainScheduleId])
+  @@index([blockWindowId])
+}
+
+model OperationalAlert {
+  id           String                 @id @default(cuid())
+  alertCode    String                 @unique @db.VarChar(50)
+  conflictId   String?
+  corridorId   String?
+  severity     DefectSeverity
+  status       OperationalAlertStatus @default(OPEN)
+  title        String                 @db.VarChar(160)
+  message      String
+  occurredAt   DateTime
+  acknowledgedAt DateTime?
+  sourceSystem String                 @default("SYNTHETIC_OPERATIONS") @db.VarChar(40)
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  conflict     OperationalConflict?   @relation(fields: [conflictId], references: [id], onDelete: SetNull)
+  corridor     Corridor?              @relation(fields: [corridorId], references: [id], onDelete: SetNull)
+
+  @@index([status, severity])
+  @@index([conflictId])
+  @@index([corridorId])
+}
+
+model Role {
+  id           String       @id @default(cuid())
+  roleCode     String       @unique @db.VarChar(50)
+  name         String       @db.VarChar(100)
+  description  String
+  sourceSystem String       @default("SYNTHETIC_ADMIN") @db.VarChar(40)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  users        AdminUser[]
+}
+
+model AdminUser {
+  id           String          @id @default(cuid())
+  userCode     String          @unique @db.VarChar(50)
+  displayName  String          @db.VarChar(120)
+  email        String          @unique @db.VarChar(160)
+  roleId       String
+  departmentId String?
+  status       AdminUserStatus @default(ACTIVE)
+  isDemo       Boolean         @default(true)
+  sourceSystem String          @default("SYNTHETIC_ADMIN") @db.VarChar(40)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  role         Role            @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  department   Department?     @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  auditLogs    AuditLog[]
+
+  @@index([roleId])
+  @@index([departmentId])
+}
+
+model SystemConfiguration {
+  id           String   @id @default(cuid())
+  configKey    String   @unique @db.VarChar(100)
+  value        Json
+  description  String
+  environment  String   @db.VarChar(30)
+  sourceSystem String   @default("SYNTHETIC_ADMIN") @db.VarChar(40)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AuditLog {
+  id           String     @id @default(cuid())
+  auditCode    String     @unique @db.VarChar(60)
+  actorUserId  String?
+  action       String     @db.VarChar(50)
+  resourceType String     @db.VarChar(50)
+  resourceId   String?
+  details      Json
+  occurredAt   DateTime
+  sourceSystem String     @default("SYNTHETIC_ADMIN") @db.VarChar(40)
+  createdAt    DateTime   @default(now())
+  actorUser   AdminUser? @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([occurredAt])
+  @@index([resourceType, resourceId])
+  @@index([actorUserId])
 }

@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get("/", listTrains);
 router.get("/schedule", listTrainSchedules);
+router.get("/timetable", listTrainSchedules);
 router.get("/:id", getTrain);
 
 module.exports = router;

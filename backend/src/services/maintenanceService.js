@@ -8,6 +8,7 @@ const {
   parsePagination,
 } = require("../validators/queryValidators");
 const { DefectSeverity, MaintenanceTaskStatus, MaintenanceTaskType } = require("@prisma/client");
+const { maintenanceStatusAliases } = require("../validators/maintenanceValidators");
 
 const priorityRanges = {
   LOW: { lt: 50 },
@@ -16,12 +17,19 @@ const priorityRanges = {
   CRITICAL: { gte: 90 },
 };
 
+const allowedStatusTransitions = {
+  PLANNED: new Set(["PLANNED", "IN_PROGRESS", "COMPLETED", "CANCELLED"]),
+  IN_PROGRESS: new Set(["IN_PROGRESS", "COMPLETED", "CANCELLED"]),
+  COMPLETED: new Set(["COMPLETED", "IN_PROGRESS"]),
+  CANCELLED: new Set(["CANCELLED"]),
+};
+
 async function listMaintenanceTasks(query) {
   const { page, limit, skip } = parsePagination(query);
   const where = {};
   const department = parseOptionalString(query.department, "department");
   const section = parseOptionalString(query.section, "section");
-  const status = parseEnum(query.status, MaintenanceTaskStatus, "status");
+  const status = parseEnum(query.status, MaintenanceTaskStatus, "status", maintenanceStatusAliases);
   const severity = parseEnum(query.severity, DefectSeverity, "severity");
   const taskType = parseEnum(query.taskType, MaintenanceTaskType, "taskType");
 
@@ -112,13 +120,35 @@ async function updateMaintenanceTask(id, data) {
     departmentId: data.departmentId || existingTask.departmentId,
     sectionId: data.sectionId || existingTask.sectionId,
   });
+  if (data.status && !allowedStatusTransitions[existingTask.status]?.has(data.status)) {
+    throw new AppError(`Invalid maintenance status transition: ${existingTask.status} -> ${data.status}`, 400);
+  }
   await prisma.maintenanceTask.update({ where: { id }, data });
   return getMaintenanceTaskById(id);
+}
+
+async function getMaintenanceHistory(id) {
+  const task = await prisma.maintenanceTask.findUnique({ where: { id }, select: { id: true, assetId: true } });
+  if (!task) throw new AppError("Maintenance task not found", 404);
+  const items = await prisma.maintenanceHistory.findMany({
+    where: { OR: [{ maintenanceTaskId: task.id }, { assetId: task.assetId }] },
+    orderBy: { completedAt: "desc" },
+  });
+  return { items, isDemoData: items.some((item) => item.sourceSystem.startsWith("SYNTHETIC")) };
+}
+
+async function getAssetHistory(id) {
+  const asset = await prisma.asset.findUnique({ where: { id }, select: { id: true } });
+  if (!asset) throw new AppError("Asset not found", 404);
+  const items = await prisma.maintenanceHistory.findMany({ where: { assetId: asset.id }, orderBy: { completedAt: "desc" } });
+  return { items, isDemoData: items.some((item) => item.sourceSystem.startsWith("SYNTHETIC")) };
 }
 
 module.exports = {
   createMaintenanceTask,
   getMaintenanceTaskById,
+  getMaintenanceHistory,
+  getAssetHistory,
   listMaintenanceTasks,
   updateMaintenanceTask,
 };

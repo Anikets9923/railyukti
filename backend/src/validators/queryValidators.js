@@ -45,12 +45,13 @@ function parseOptionalDate(query, fieldName) {
   return query[fieldName] === undefined ? undefined : parseDateOnly(query[fieldName], fieldName);
 }
 
-function parseEnum(value, enumValues, fieldName) {
+function parseEnum(value, enumValues, fieldName, aliases = {}) {
   if (value === undefined) {
     return undefined;
   }
 
-  const normalizedValue = String(value).toUpperCase();
+  const normalizedInput = String(value).trim().toUpperCase();
+  const normalizedValue = aliases[normalizedInput] || normalizedInput;
   if (!Object.values(enumValues).includes(normalizedValue)) {
     throw new AppError(`${fieldName} must be one of: ${Object.values(enumValues).join(", ")}`, 400);
   }

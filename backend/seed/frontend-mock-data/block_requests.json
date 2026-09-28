@@ -1,0 +1,29 @@
+[
+  {
+    "request_code": "BR-0001",
+    "department_code": "ENG",
+    "section_code": "SEC-A1",
+    "block_window_key": "SEC-A1|2026-09-13|14:00|20:00",
+    "corridor_code": "COR-SEC-A1",
+    "requested_window": "2026-09-13 14:00-20:00",
+    "requested_for": "Synthetic track inspection access",
+    "impact": "Synthetic planning scenario only; no real movement instruction.",
+    "requested_by_role": "DEPARTMENT_PLANNER",
+    "status": "PENDING",
+    "source_system": "SYNTHETIC_BLOCK_REQUEST"
+  },
+  {
+    "request_code": "BR-0002",
+    "department_code": "TRD",
+    "section_code": "SEC-B1",
+    "block_window_key": "SEC-B1|2026-09-13|18:00|20:00",
+    "corridor_code": "COR-SEC-B1",
+    "requested_window": "2026-09-13 18:00-20:00",
+    "requested_for": "Synthetic traction equipment inspection access",
+    "impact": "Synthetic planning scenario only; no real movement instruction.",
+    "requested_by_role": "DEPARTMENT_PLANNER",
+    "status": "APPROVED",
+    "decision_note": "Synthetic approval for interface demonstration.",
+    "source_system": "SYNTHETIC_BLOCK_REQUEST"
+  }
+]

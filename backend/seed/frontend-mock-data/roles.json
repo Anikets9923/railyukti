@@ -1,0 +1,38 @@
+[
+  {
+    "role_code": "ADMIN",
+    "name": "Synthetic Administrator",
+    "description": "Demo role for administrative UI states.",
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "role_code": "FIELD_SUPERVISOR",
+    "name": "Synthetic Field Supervisor",
+    "description": "Demo role for field maintenance UI states.",
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "role_code": "DEPARTMENT_PLANNER",
+    "name": "Synthetic Department Planner",
+    "description": "Demo role for department planning UI states.",
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "role_code": "DEPARTMENT_OFFICER",
+    "name": "Synthetic Department Officer",
+    "description": "Demo role for department approval UI states.",
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "role_code": "OPERATIONS_PLANNER",
+    "name": "Synthetic Operations Planner",
+    "description": "Demo role for operations UI states.",
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "role_code": "DIVISIONAL_OFFICER",
+    "name": "Synthetic Divisional Officer",
+    "description": "Demo role for divisional UI states.",
+    "source_system": "SYNTHETIC_ADMIN"
+  }
+]

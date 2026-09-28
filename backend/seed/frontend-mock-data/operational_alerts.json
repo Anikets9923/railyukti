@@ -1,0 +1,25 @@
+[
+  {
+    "alert_code": "ALERT-0001",
+    "conflict_code": "CONFLICT-0001",
+    "corridor_code": "COR-SEC-A1",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "title": "Synthetic access-window conflict",
+    "message": "Review the fictional conflict before displaying the planning scenario.",
+    "occurred_at": "2026-09-05T11:05:00Z",
+    "source_system": "SYNTHETIC_OPERATIONS"
+  },
+  {
+    "alert_code": "ALERT-0002",
+    "conflict_code": "CONFLICT-0002",
+    "corridor_code": "COR-SEC-B1",
+    "severity": "MEDIUM",
+    "status": "ACKNOWLEDGED",
+    "title": "Synthetic conflict resolved",
+    "message": "Resolved demonstration alert retained for operations history.",
+    "occurred_at": "2026-09-05T11:20:00Z",
+    "acknowledged_at": "2026-09-06T09:00:00Z",
+    "source_system": "SYNTHETIC_OPERATIONS"
+  }
+]

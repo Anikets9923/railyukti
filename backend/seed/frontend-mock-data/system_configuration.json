@@ -1,0 +1,23 @@
+[
+  {
+    "config_key": "demo.data_origin",
+    "value": "SYNTHETIC",
+    "description": "Marks records imported for demonstration only.",
+    "environment": "demo",
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "config_key": "planning.default_horizon_days",
+    "value": 7,
+    "description": "Synthetic default planning horizon for UI fixtures.",
+    "environment": "demo",
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "config_key": "operations.real_movement_data",
+    "value": false,
+    "description": "Indicates that operational records are not real movement instructions.",
+    "environment": "demo",
+    "source_system": "SYNTHETIC_ADMIN"
+  }
+]

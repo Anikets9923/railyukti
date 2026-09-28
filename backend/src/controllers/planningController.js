@@ -3,6 +3,7 @@ const planningService = require("../services/planningService");
 const { sendSuccess } = require("../utils/apiResponse");
 const AppError = require("../utils/appError");
 const { validateGeneratePlanPayload } = require("../validators/planningValidators");
+const divisionalService = require("../services/divisionalService");
 
 const listPlanning = asyncHandler(async (request, response) => {
   const result = await planningService.listBlockPlans(request.query);
@@ -21,4 +22,9 @@ const generatePlan = asyncHandler(async (request, response) => {
   return sendSuccess(response, "Block plan generated successfully", result);
 });
 
-module.exports = { generatePlan, getPlanning, listPlanning };
+const decidePlan = asyncHandler(async (request, response) => {
+  const result = await divisionalService.decidePlan(request.params.id, request.body || {});
+  return sendSuccess(response, "Plan decision recorded successfully", result);
+});
+
+module.exports = { decidePlan, generatePlan, getPlanning, listPlanning };

@@ -1,0 +1,31 @@
+[
+  {
+    "conflict_code": "CONFLICT-0001",
+    "train_number": "12001",
+    "schedule_date": "2026-09-13",
+    "section_code": "SEC-A1",
+    "block_window_key": "SEC-A1|2026-09-13|14:00|20:00",
+    "corridor_code": "COR-SEC-A1",
+    "conflict_type": "SCHEDULE_WINDOW_OVERLAP",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "description": "Synthetic overlap between a timetable record and a requested access window.",
+    "detected_at": "2026-09-05T11:00:00Z",
+    "source_system": "SYNTHETIC_OPERATIONS"
+  },
+  {
+    "conflict_code": "CONFLICT-0002",
+    "train_number": "12002",
+    "schedule_date": "2026-09-13",
+    "section_code": "SEC-B1",
+    "block_window_key": "SEC-B1|2026-09-13|18:00|20:00",
+    "corridor_code": "COR-SEC-B1",
+    "conflict_type": "SCHEDULE_WINDOW_OVERLAP",
+    "severity": "MEDIUM",
+    "status": "RESOLVED",
+    "description": "Synthetic conflict retained as a resolved dashboard example.",
+    "detected_at": "2026-09-05T11:15:00Z",
+    "resolved_at": "2026-09-06T09:00:00Z",
+    "source_system": "SYNTHETIC_OPERATIONS"
+  }
+]

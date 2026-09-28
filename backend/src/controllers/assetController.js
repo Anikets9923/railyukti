@@ -14,4 +14,9 @@ const getAsset = asyncHandler(async (request, response) => {
   return sendSuccess(response, "Asset retrieved successfully", asset);
 });
 
-module.exports = { getAsset, listAssets };
+const getAssetHistory = asyncHandler(async (request, response) => {
+  const history = await require("../services/maintenanceService").getAssetHistory(request.params.id);
+  return sendSuccess(response, "Maintenance history retrieved successfully", history);
+});
+
+module.exports = { getAsset, getAssetHistory, listAssets };

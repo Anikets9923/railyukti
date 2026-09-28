@@ -4,6 +4,7 @@ const {
   getMaintenance,
   listMaintenance,
   updateMaintenance,
+  getMaintenanceHistory,
 } = require("../controllers/maintenanceController");
 const { maintenanceFailureRisk, maintenanceSpares, maintenanceTechnicians } = require("../controllers/resourceInputController");
 
@@ -13,6 +14,7 @@ router.get("/", listMaintenance);
 router.get("/:id/failure-risk", maintenanceFailureRisk);
 router.get("/:id/spares", maintenanceSpares);
 router.get("/:id/technician-availability", maintenanceTechnicians);
+router.get("/:id/history", getMaintenanceHistory);
 router.get("/:id", getMaintenance);
 router.post("/", createMaintenance);
 router.put("/:id", updateMaintenance);

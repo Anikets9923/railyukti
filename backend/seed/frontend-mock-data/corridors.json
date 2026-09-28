@@ -1,0 +1,34 @@
+[
+  {
+    "corridor_code": "COR-SEC-A1",
+    "section_code": "SEC-A1",
+    "name": "Synthetic East Loop Corridor",
+    "status": "AVAILABLE",
+    "description": "Fictional corridor used for UI and planning demonstrations.",
+    "source_system": "SYNTHETIC_OPERATIONS"
+  },
+  {
+    "corridor_code": "COR-SEC-B1",
+    "section_code": "SEC-B1",
+    "name": "Synthetic Central Junction Corridor",
+    "status": "MONITORED",
+    "description": "Fictional corridor with synthetic timetable conflict examples.",
+    "source_system": "SYNTHETIC_OPERATIONS"
+  },
+  {
+    "corridor_code": "COR-SEC-C1",
+    "section_code": "SEC-C1",
+    "name": "Synthetic Riverside Block Corridor",
+    "status": "AVAILABLE",
+    "description": "Fictional corridor for operational dashboard demonstrations.",
+    "source_system": "SYNTHETIC_OPERATIONS"
+  },
+  {
+    "corridor_code": "COR-SEC-D1",
+    "section_code": "SEC-D1",
+    "name": "Synthetic Industrial Spur Corridor",
+    "status": "REVIEW",
+    "description": "Fictional corridor with no real operating restriction.",
+    "source_system": "SYNTHETIC_OPERATIONS"
+  }
+]

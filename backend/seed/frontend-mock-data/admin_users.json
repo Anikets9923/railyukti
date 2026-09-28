@@ -1,0 +1,42 @@
+[
+  {
+    "user_code": "DEMO-ADMIN-001",
+    "display_name": "Demo Admin",
+    "email": "demo.admin@example.invalid",
+    "role_code": "ADMIN",
+    "department_code": null,
+    "status": "ACTIVE",
+    "is_demo": true,
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "user_code": "DEMO-ENG-PLANNER-001",
+    "display_name": "Demo Engineering Planner",
+    "email": "demo.eng.planner@example.invalid",
+    "role_code": "DEPARTMENT_PLANNER",
+    "department_code": "ENG",
+    "status": "ACTIVE",
+    "is_demo": true,
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "user_code": "DEMO-TRD-FIELD-001",
+    "display_name": "Demo TRD Field Supervisor",
+    "email": "demo.trd.field@example.invalid",
+    "role_code": "FIELD_SUPERVISOR",
+    "department_code": "TRD",
+    "status": "ACTIVE",
+    "is_demo": true,
+    "source_system": "SYNTHETIC_ADMIN"
+  },
+  {
+    "user_code": "DEMO-OPS-001",
+    "display_name": "Demo Operations Planner",
+    "email": "demo.operations@example.invalid",
+    "role_code": "OPERATIONS_PLANNER",
+    "department_code": null,
+    "status": "ACTIVE",
+    "is_demo": true,
+    "source_system": "SYNTHETIC_ADMIN"
+  }
+]

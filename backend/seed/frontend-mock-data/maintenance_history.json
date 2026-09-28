@@ -1,0 +1,24 @@
+[
+  {
+    "history_code": "HIST-0001",
+    "asset_code": "AST-0001",
+    "maintenance_code": "MNT-0002",
+    "event_type": "INSPECTION",
+    "summary": "Synthetic inspection completed for asset condition review.",
+    "completed_at": "2026-08-20T14:00:00Z",
+    "performed_by": "DEMO-CREW-ENG-01",
+    "notes": "Demonstration record; not an operational work instruction.",
+    "source_system": "SYNTHETIC_HISTORY"
+  },
+  {
+    "history_code": "HIST-0002",
+    "asset_code": "AST-0020",
+    "maintenance_code": "MNT-0015",
+    "event_type": "PREVENTIVE",
+    "summary": "Synthetic preventive maintenance event recorded.",
+    "completed_at": "2026-08-25T11:30:00Z",
+    "performed_by": "DEMO-CREW-TRD-01",
+    "notes": "Demonstration record; verify against an authorized maintenance system.",
+    "source_system": "SYNTHETIC_HISTORY"
+  }
+]

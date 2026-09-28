@@ -5,4 +5,4 @@ railyukti backend apis
 /api/maintenance": maintenanceRoutes
 /api/trains : trainRoutes
 /api/blocks : blockWindowRoutes
-/api/planning : planningRoutes);
+/api/planning : planningRoutes

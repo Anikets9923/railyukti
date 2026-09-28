@@ -10,6 +10,11 @@ const datasetMapping = {
     Ernakulam: { departmentCode: "SNT", sectionCode: "SEC-C1" },
     Bangalore: { departmentCode: "SNT", sectionCode: "SEC-D1" },
   },
+  departmentSectionMappings: {
+    ENG: "SEC-A1",
+    TRD: "SEC-B1",
+    SNT: "SEC-C1",
+  },
   assetStatusMap: {
     AVAILABLE: "ACTIVE",
     OUT_OF_SERVICE: "INACTIVE",

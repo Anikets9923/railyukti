@@ -1,0 +1,22 @@
+[
+  {
+    "defect_code": "DEF-FIELD-0001",
+    "asset_code": "AST-0001",
+    "description": "Synthetic field report: simulated track inspection variance requires review.",
+    "severity": "HIGH",
+    "status": "OPEN",
+    "reported_at": "2026-09-10T08:30:00Z",
+    "reported_by_role": "FIELD_SUPERVISOR",
+    "source_system": "SYNTHETIC_FIELD"
+  },
+  {
+    "defect_code": "DEF-FIELD-0002",
+    "asset_code": "AST-0020",
+    "description": "Synthetic field report: simulated traction equipment inspection observation.",
+    "severity": "MEDIUM",
+    "status": "IN_PROGRESS",
+    "reported_at": "2026-09-11T10:15:00Z",
+    "reported_by_role": "FIELD_SUPERVISOR",
+    "source_system": "SYNTHETIC_FIELD"
+  }
+]

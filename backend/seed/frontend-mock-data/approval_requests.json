@@ -1,0 +1,22 @@
+[
+  {
+    "approval_code": "APR-0001",
+    "block_request_code": "BR-0001",
+    "department_code": "ENG",
+    "requested_by_role": "DEPARTMENT_PLANNER",
+    "requested_action": "BLOCK_REQUEST",
+    "status": "PENDING",
+    "source_system": "SYNTHETIC_APPROVAL"
+  },
+  {
+    "approval_code": "APR-0002",
+    "block_request_code": "BR-0002",
+    "department_code": "TRD",
+    "requested_by_role": "DEPARTMENT_PLANNER",
+    "requested_action": "BLOCK_REQUEST",
+    "status": "APPROVED",
+    "decision_note": "Synthetic approval for interface demonstration.",
+    "decided_at": "2026-09-06T09:00:00Z",
+    "source_system": "SYNTHETIC_APPROVAL"
+  }
+]
